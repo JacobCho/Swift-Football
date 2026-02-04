@@ -1,0 +1,40 @@
+//
+//  NavigationViewModel.swift
+//  Swift Football
+//
+//  Created by Jacob Cho on 2026-02-02.
+//
+
+import SwiftUI
+internal import Combine
+
+enum Route: Hashable {
+    case countries
+    case leagues(country: Country)
+}
+
+class Coordinator: ObservableObject {
+    @Published var path = NavigationPath()
+    
+    func pop() {
+        path.removeLast()
+    }
+    
+    func push(destination: Route) {
+        path.append(destination)
+    }
+    
+    func goToLeagues(_ country: Country) {
+        path.append(Route.leagues(country: country))
+    }
+    
+    @ViewBuilder
+    func view(for route: Route) -> some View {
+        switch route {
+        case .countries:
+            CountriesListView()
+        case .leagues(let country):
+            LeaguesListView(country: country)
+        }
+    }
+}
