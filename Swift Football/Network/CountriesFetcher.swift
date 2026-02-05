@@ -47,7 +47,7 @@ class CountriesFetcher: DataFetcher {
         }
         
         do {
-            let response: CountriesResponse = try await self.fetch(endPoint: "countries", parameters: parameters)
+            let response: CountriesResponse = try await self.fetch(endPoint: .countries, parameters: parameters)
             cachedResponse = response
             return response
         }  catch {

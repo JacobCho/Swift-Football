@@ -54,7 +54,7 @@ class StandingsFetcher: DataFetcher {
         }
         
         do {
-            let response: StandingsResponse = try await self.fetch(endPoint: "standings", parameters: parameters)
+            let response: StandingsResponse = try await self.fetch(endPoint: .standings, parameters: parameters)
             cachedResponse = response
             return response
         }  catch {

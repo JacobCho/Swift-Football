@@ -86,7 +86,7 @@ class LeaguesFetcher: DataFetcher {
                 parameters["last"] = String("\(last)")
             }
             
-            let response: LeaguesResponse = try await self.fetch(endPoint: "leagues", parameters: parameters)
+            let response: LeaguesResponse = try await self.fetch(endPoint: .leagues, parameters: parameters)
             cachedResponse = response
             return response
         } catch {

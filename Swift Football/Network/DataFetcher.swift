@@ -12,6 +12,35 @@ enum NetworkError: Error {
     case invalidResponse
     case decodingError(Error)
     case serverError(Int)
+    case testFileError
+}
+
+enum Endpoint: String {
+    case countries
+    case leagues
+    case standings
+    
+    func jsonFilename() -> String {
+        switch self {
+        case .countries:
+            return "countries"
+        case .leagues:
+            return "english-leagues"
+        case .standings:
+            return "prem-2024-standings"
+        }
+    }
+    
+    func shouldUseTest() -> Bool {
+        switch self {
+        case .countries:
+            return true
+        case .leagues:
+            return true
+        case .standings:
+            return true
+        }
+    }
 }
 
 class DataFetcher {
@@ -29,8 +58,12 @@ class DataFetcher {
         return new == cachedParams
     }
     
-    func fetch<T: Decodable>(endPoint: String, parameters: [String: String]? = nil) async throws -> T {
-        let urlString = "https://v3.football.api-sports.io/\(endPoint)?"
+    func fetch<T: Decodable>(endPoint: Endpoint, parameters: [String: String]? = nil) async throws -> T {
+        if endPoint.shouldUseTest() {
+            return try fetchTestFiles(endPoint: endPoint)
+        }
+        
+        let urlString = "https://v3.football.api-sports.io/\(endPoint.rawValue)?"
         guard var components = URLComponents(string: urlString) else {
             throw NetworkError.invalidURL
         }
@@ -64,5 +97,18 @@ class DataFetcher {
         }
         
         return try JSONDecoder().decode(T.self, from: data)
+    }
+    
+    func fetchTestFiles<T: Decodable>(endPoint: Endpoint) throws -> T {
+        guard let url = Bundle.main.url(forResource: endPoint.jsonFilename(), withExtension: "json") else {
+            throw NetworkError.testFileError
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            throw NetworkError.testFileError
+        }
     }
 }
