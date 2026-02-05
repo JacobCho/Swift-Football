@@ -44,7 +44,7 @@ class LeaguesViewModel: ObservableObject {
                 leagues = response.leagues
             }
         } catch {
-            errorMessage = error.errorMessage
+            errorMessage = error.localizedDescription
         }
         isLoading = false
     }

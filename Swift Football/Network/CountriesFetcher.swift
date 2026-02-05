@@ -34,20 +34,21 @@ class CountriesFetcher: DataFetcher {
     /// search: Name of the country; >= 3 chars
     
     func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async throws(NetworkError) -> CountriesResponse {
-            var parameters: [String: String] = [:]
-            
-            if let name {
-                parameters["name"] = name
-            }
-            if let code, code.count >= 2 && code.count <= 6 {
-                parameters["code"] = code
-            }
-            if let search, search.count >= 3 {
-                parameters["search"] = search
-            }
+        var parameters: [String: String] = [:]
+        
+        if let name {
+            parameters["name"] = name
+        }
+        if let code, code.count >= 2 && code.count <= 6 {
+            parameters["code"] = code
+        }
+        if let search, search.count >= 3 {
+            parameters["search"] = search
+        }
         
         do {
             let response: CountriesResponse = try await self.fetch(endPoint: "countries", parameters: parameters)
+            cachedResponse = response
             return response
         }  catch {
             throw .decodingError(error)

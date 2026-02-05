@@ -12,29 +12,33 @@ enum NetworkError: Error {
     case invalidResponse
     case decodingError(Error)
     case serverError(Int)
-    
-    var errorMessage: String? {
-        switch self {
-        case .invalidURL:
-            return "Invalid URL"
-        case .invalidResponse:
-            return "Invalid Response"
-        case .decodingError:
-            return "Decoding Error"
-        case .serverError:
-            return "Server Error"
-        }
-    }
 }
 
 class DataFetcher {
     
+    var cachedResponse: Decodable?
+    var cachedParameters: [String: String]?
+    
     init() {}
+    
+    func shouldReturnCache(new: [String: String]) -> Bool {
+        guard let cachedParams = cachedParameters else {
+            return false
+        }
+        
+        return new == cachedParams
+    }
     
     func fetch<T: Decodable>(endPoint: String, parameters: [String: String]? = nil) async throws -> T {
         let urlString = "https://v3.football.api-sports.io/\(endPoint)?"
         guard var components = URLComponents(string: urlString) else {
             throw NetworkError.invalidURL
+        }
+        
+        if let cached = cachedResponse as? T, let params = parameters, shouldReturnCache(new: params) {
+            return cached
+        } else {
+            cachedParameters = parameters
         }
         
         if let parameters {

@@ -11,6 +11,7 @@ internal import Combine
 enum Route: Hashable {
     case countries
     case leagues(country: Country)
+    case standings(details: LeagueDetails)
 }
 
 class Coordinator: ObservableObject {
@@ -35,6 +36,8 @@ class Coordinator: ObservableObject {
             CountriesListView()
         case .leagues(let country):
             LeaguesListView(country: country)
+        case .standings(let details):
+            StandingsListView(leagueDetails: details)
         }
     }
 }

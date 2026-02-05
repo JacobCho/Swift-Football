@@ -29,7 +29,6 @@ struct LeaguesResponse: Decodable {
 }
 
 class LeaguesFetcher: DataFetcher {
-    @Published var leagues: [LeagueDetails] = []
     
     /// Parameters:
     /// id: id of the league
@@ -88,7 +87,7 @@ class LeaguesFetcher: DataFetcher {
             }
             
             let response: LeaguesResponse = try await self.fetch(endPoint: "leagues", parameters: parameters)
-            
+            cachedResponse = response
             return response
         } catch {
             throw NetworkError.decodingError(error)

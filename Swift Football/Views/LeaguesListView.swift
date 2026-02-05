@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LeaguesListView: View {
+    @EnvironmentObject var coordinator: Coordinator
     @StateObject var viewModel = LeaguesViewModel()
     let country: Country
     
@@ -26,23 +27,28 @@ struct LeaguesListView: View {
                     }
                 }
             } else {
-                List(viewModel.leagues) { leagueDetails in
-                    ZStack {
-                        NavigationLink(destination: EmptyView()) {
-                            EmptyView()
+                if viewModel.leagues.count == 0 {
+                    Text("Nothing to display!")
+                } else {
+                    List(viewModel.leagues) { leagueDetails in
+                        ZStack {
+                            NavigationLink("", value: leagueDetails)
+                            if let league = leagueDetails.league {
+                                LogoListRow(listable: league)
+                            }
                         }
-                        if let league = leagueDetails.league {
-                            LogoListRow(listable: league)
-                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                }
-                .listStyle(.plain)
-                .listRowSpacing(-20)
-                .navigationBarTitle("Leagues")
-                .safeAreaInset(edge: .top) {
-                    Color.clear.frame(height: 10)
+                    .listStyle(.plain)
+                    .listRowSpacing(-20)
+                    .navigationBarTitle("Leagues")
+                    .safeAreaInset(edge: .top) {
+                        Color.clear.frame(height: 10)
+                    }
+                    .navigationDestination(for: LeagueDetails.self) { details in
+                        coordinator.view(for: .standings(details: details))
+                    }
                 }
             }
         }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Season: Decodable {
+struct Season: Decodable, Hashable {
     let year: Int?
     let startDate: String?
     let endDate: String?

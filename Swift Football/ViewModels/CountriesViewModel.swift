@@ -16,7 +16,7 @@ class CountriesViewModel: ObservableObject {
     private let countriesFetcher = CountriesFetcher()
     
     func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async {
-        if isLoading { return }
+        if isLoading || countries.count > 0 { return }
         isLoading = true
         errorMessage = nil
         
@@ -26,7 +26,7 @@ class CountriesViewModel: ObservableObject {
                 countries = response.countries
             }
         } catch {
-            errorMessage = error.errorMessage
+            errorMessage = error.localizedDescription
         }
         isLoading = false
     }

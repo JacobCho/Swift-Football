@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct LeagueDetails: Identifiable, Decodable {
+struct LeagueDetails: Identifiable, Decodable, Equatable, Hashable {
+    
     var id: Int = 0
     let league: League?
     let country: Country?
@@ -17,6 +18,10 @@ struct LeagueDetails: Identifiable, Decodable {
         case league
         case country
         case seasons
+    }
+    
+    static func == (lhs: LeagueDetails, rhs: LeagueDetails) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

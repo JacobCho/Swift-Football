@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Coverage: Decodable {
+struct Coverage: Decodable, Hashable {
     let fixtures: Fixtures?
     let standings: Bool?
     let players: Bool?

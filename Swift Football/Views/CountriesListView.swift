@@ -26,7 +26,7 @@ struct CountriesListView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        VStack {
             if viewModel.isLoading {
                 ProgressView()
             } else if let error = viewModel.errorMessage {
@@ -40,24 +40,27 @@ struct CountriesListView: View {
                     }
                 }
             } else {
-                List(filtered) { country in
-                    ZStack {
-                        NavigationLink("", value: country)
-                        
-                        LogoListRow(listable: country)
+                if filtered.count == 0 {
+                    Text("Nothing to display!")
+                } else {
+                    List(filtered) { country in
+                        ZStack {
+                            NavigationLink("", value: country)
+                            
+                            LogoListRow(listable: country)
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                }
-                .listStyle(.plain)
-                .listRowSpacing(-20)
-                .navigationBarTitle("Countries")
-                .safeAreaInset(edge: .top) {
-                    Color.clear.frame(height: 10)
-                }
-                .searchable(text: $searchText, prompt: "Search countries")
-                .navigationDestination(for: Country.self) { country in
-                    coordinator.view(for: .leagues(country: country))
+                    .listStyle(.plain)
+                    .listRowSpacing(-20)
+                    .safeAreaInset(edge: .top) {
+                        Color.clear.frame(height: 10)
+                    }
+                    .searchable(text: $searchText, prompt: "Search countries")
+                    .navigationDestination(for: Country.self) { country in
+                        coordinator.view(for: .leagues(country: country))
+                    }
                 }
             }
         }
@@ -66,6 +69,7 @@ struct CountriesListView: View {
                 await viewModel.fetchCountries()
             }
         }
+        .navigationBarTitle("Countries")
     }
 }
 

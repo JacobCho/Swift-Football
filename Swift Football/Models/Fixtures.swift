@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Fixtures: Decodable {
+struct Fixtures: Decodable, Hashable {
     let events: Bool?
     let lineups: Bool?
     let statsFixtures: Bool?
