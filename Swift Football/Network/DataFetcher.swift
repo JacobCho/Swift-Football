@@ -31,7 +31,7 @@ enum Endpoint: String {
         }
     }
     
-    func shouldUseTest() -> Bool {
+    func shouldUseMock() -> Bool {
         switch self {
         case .countries:
             return true
@@ -59,7 +59,7 @@ class DataFetcher {
     }
     
     func fetch<T: Decodable>(endPoint: Endpoint, parameters: [String: String]? = nil) async throws -> T {
-        if endPoint.shouldUseTest() {
+        if endPoint.shouldUseMock() {
             return try fetchTestFiles(endPoint: endPoint)
         }
         

@@ -25,10 +25,6 @@ class Coordinator: ObservableObject {
         path.append(destination)
     }
     
-    func goToLeagues(_ country: Country) {
-        path.append(Route.leagues(country: country))
-    }
-    
     @ViewBuilder
     func view(for route: Route) -> some View {
         switch route {

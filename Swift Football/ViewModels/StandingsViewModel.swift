@@ -28,6 +28,70 @@ class StandingsViewModel: ObservableObject {
         return standings
     }
     
+    func navTitle() -> String {
+        guard let league = containers.first?.league else {
+            return ""
+        }
+        var name = ""
+        var year = ""
+        if let leagueName = league.name {
+            name = leagueName
+        }
+        
+        if let season = league.season {
+            year = "\(season)"
+        }
+        return "\(name) Standings \(year)"
+    }
+    
+    func standingPlayed(_ standing: Standing) -> String {
+        guard let played = standing.all?.played else {
+            return ""
+        }
+        
+        return "\(played)"
+    }
+    
+    func standingWins(_ standing: Standing) -> String {
+        guard let wins = standing.all?.win else {
+            return ""
+        }
+        
+        return "\(wins)"
+    }
+    
+    func standingDraws(_ standing: Standing) -> String {
+        guard let draws = standing.all?.draw else {
+            return ""
+        }
+        
+        return "\(draws)"
+    }
+    
+    func standingLosses(_ standing: Standing) -> String {
+        guard let lose = standing.all?.lose else {
+            return ""
+        }
+        
+        return "\(lose)"
+    }
+    
+    func standingGD(_ standing: Standing) -> String {
+        guard let goalsDiff = standing.goalsDiff, let goals = standing.all?.goals else {
+            return ""
+        }
+        let positive = (goals.goalsFor - goals.goalsAgainst) > 0 ? "+" : ""
+        
+        return "\(positive)\(goalsDiff)"
+    }
+    
+    func standingPoints(_ standing: Standing) -> String {
+        guard let points = standing.points else {
+            return ""
+        }
+        return "\(points)"
+    }
+    
     func fetchStandings(league: Int? = nil, season: Int? = nil, team: Int? = nil) async {
         if isLoading { return }
         isLoading = true
