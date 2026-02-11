@@ -28,28 +28,13 @@ struct StandingsListView: View {
             } else {
                 if let standings: [Standing] = viewModel.flattenedStandings(), standings.count > 0 {
                     VStack(spacing: -20) {
-                        HStack {
-                            Text("Team")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 45)
-                            HStack {
-                                StandingsText(text: "PL")
-                                StandingsText(text: "W")
-                                StandingsText(text: "D")
-                                StandingsText(text: "L")
-                                StandingsText(text: "GD")
-                                StandingsText(text: "PTS")
-                            }
-                            .multilineTextAlignment(.center)
-                            .frame(alignment: .trailing)
-                            .padding(.trailing, 25)
-                        }
-                        .font(.system(size: 11, weight: .semibold))
                         List {
                             Section {
                                 ForEach(standings) { standing in
                                     StandingTeamCell(viewModel: viewModel, standing: standing)
                                 }
+                            } header: {
+                                StandingsHeader()
                             }
                             
                             Section {
@@ -62,7 +47,7 @@ struct StandingsListView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .listRowSpacing(-25)
-                        .listStyle(.plain)
+                        .listStyle(.insetGrouped)
                         .navigationBarTitle(viewModel.navTitle())
                         .navigationBarTitleDisplayMode(.inline)
                         .safeAreaInset(edge: .top) {
@@ -79,6 +64,29 @@ struct StandingsListView: View {
                 await viewModel.fetchStandings(league: leagueDetails.id, season: 2024)
             }
         }
+    }
+}
+
+struct StandingsHeader: View {
+    var body: some View {
+        HStack {
+            Text("Team")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 45)
+            HStack {
+                StandingsText(text: "PL")
+                StandingsText(text: "W")
+                StandingsText(text: "D")
+                StandingsText(text: "L")
+                StandingsText(text: "GD")
+                StandingsText(text: "PTS")
+            }
+            .multilineTextAlignment(.center)
+            .frame(alignment: .trailing)
+            .padding(.trailing, 8)
+        }
+        .foregroundStyle(.black)
+        .font(.system(size: 11, weight: .semibold))
     }
 }
 
