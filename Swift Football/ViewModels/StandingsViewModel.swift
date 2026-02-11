@@ -7,6 +7,13 @@
 
 import Foundation
 internal import Combine
+import SwiftUI
+
+struct StandingsDescriptionLegend: Identifiable {
+    var id = UUID()
+    let color: Color
+    let description: String?
+}
 
 @MainActor
 class StandingsViewModel: ObservableObject {
@@ -90,6 +97,58 @@ class StandingsViewModel: ObservableObject {
             return ""
         }
         return "\(points)"
+    }
+    
+    func colourForDescription(_ description: StandingDescription?) -> Color {
+        guard let description else {
+            return .clear
+        }
+        switch description {
+        case .championsLeague, .copaLibertadores:
+            return .yellow
+        case .europaLeague:
+            return .blue
+        case .conferenceLeague:
+            return .cyan
+        case .relegation:
+            return .red
+        case .relegationPlayoff:
+            return .brown
+        case .promotion:
+            return .green
+        case .promotionPlayoffs:
+            return .gray
+        case .finals:
+            return .orange
+        case .nextRound:
+            return .teal
+        case .lowerTableRound:
+            return .indigo
+        case .other(_):
+            return .clear
+        }
+    }
+    
+    func standingsDescriptionsLegend() -> [StandingsDescriptionLegend] {
+        guard let flattened = flattenedStandings() else {
+            return []
+        }
+        let filtered = flattened.compactMap { $0.description }
+        let descriptionSet = Set(filtered)
+        let sorted = descriptionSet.sorted { standing1, standing2 in
+            switch (standing1, standing2) {
+            case (.championsLeague, _): return true
+            case (_, .championsLeague): return false
+            case (.europaLeague, _): return true
+            case (_, .europaLeague): return false
+            case (.conferenceLeague, _): return true
+            case (_, .conferenceLeague): return false
+            default: return false
+            }
+        }
+        return sorted.map { standing in
+            StandingsDescriptionLegend(color: colourForDescription(standing), description: standing.description())
+        }
     }
     
     func fetchStandings(league: Int? = nil, season: Int? = nil, team: Int? = nil) async {

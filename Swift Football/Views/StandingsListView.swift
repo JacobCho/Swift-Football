@@ -31,7 +31,7 @@ struct StandingsListView: View {
                         HStack {
                             Text("Team")
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 25)
+                                .padding(.leading, 45)
                             HStack {
                                 StandingsText(text: "PL")
                                 StandingsText(text: "W")
@@ -45,40 +45,24 @@ struct StandingsListView: View {
                             .padding(.trailing, 25)
                         }
                         .font(.system(size: 11, weight: .semibold))
-                        List(standings) { standing in
-                            HStack {
-                                if let team = standing.team {
-                                    AsyncImage(url: URL(string:team.logo ?? "")) { result in
-                                        result.image?
-                                            .resizable()
-                                            .scaledToFit()
-                                    }
-                                    .frame(width: 20, height: 20)
-                                    .padding(.leading, 8)
-                                    Text(team.name ?? "")
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(.leading, 8)
-                                    HStack {
-                                        StandingsText(text: viewModel.standingPlayed(standing))
-                                        StandingsText(text: viewModel.standingWins(standing))
-                                        StandingsText(text: viewModel.standingDraws(standing))
-                                        StandingsText(text: viewModel.standingLosses(standing))
-                                        StandingsText(text: viewModel.standingGD(standing))
-                                        StandingsText(text: viewModel.standingPoints(standing))
-                                    }
-                                    .multilineTextAlignment(.center)
-                                    .frame(alignment: .trailing)
-                                    .padding(.trailing, 8)
+                        List {
+                            Section {
+                                ForEach(standings) { standing in
+                                    StandingTeamCell(viewModel: viewModel, standing: standing)
                                 }
                             }
-                            .font(.system(size: 11))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                            
+                            Section {
+                                ForEach(viewModel.standingsDescriptionsLegend()) { legend in
+                                    StandingDescriptionLegendCell(legend: legend)
+                                }
+                            }
                         }
+                        .font(.system(size: 11))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .listRowSpacing(-25)
                         .listStyle(.plain)
-                        .listRowSpacing(-20)
                         .navigationBarTitle(viewModel.navTitle())
                         .navigationBarTitleDisplayMode(.inline)
                         .safeAreaInset(edge: .top) {
@@ -104,5 +88,61 @@ struct StandingsText: View {
     var body: some View {
         Text(text)
             .frame(minWidth:22, maxWidth: 22)
+    }
+}
+
+struct StandingDescriptionLegendCell: View {
+    var legend: StandingsDescriptionLegend
+    
+    var body: some View {
+        HStack {
+            legend.color
+                .clipShape(Circle())
+                .frame(width: 20, height: 20)
+            Text(legend.description ?? "")
+                .font(.system(size: 11))
+                .lineLimit(1)
+        }
+        .frame(maxHeight: 30)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+    }
+}
+
+struct StandingTeamCell: View {
+    var viewModel: StandingsViewModel
+    var standing: Standing
+    
+    var body: some View {
+        HStack {
+            if let team = standing.team {
+                viewModel.colourForDescription(standing.description)
+                    .frame(maxWidth: 3)
+                StandingsText(text: "\(standing.rank)")
+                AsyncImage(url: URL(string:team.logo ?? "")) { result in
+                    result.image?
+                        .resizable()
+                        .scaledToFit()
+                }
+                .frame(width: 20, height: 20)
+                Text(team.name ?? "")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    StandingsText(text: viewModel.standingPlayed(standing))
+                    StandingsText(text: viewModel.standingWins(standing))
+                    StandingsText(text: viewModel.standingDraws(standing))
+                    StandingsText(text: viewModel.standingLosses(standing))
+                    StandingsText(text: viewModel.standingGD(standing))
+                    StandingsText(text: viewModel.standingPoints(standing))
+                }
+                .multilineTextAlignment(.center)
+                .frame(alignment: .trailing)
+                .padding(.trailing, 8)
+            }
+        }
+        .frame(height: 30)
+        .minimumScaleFactor(0.8)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
 }
