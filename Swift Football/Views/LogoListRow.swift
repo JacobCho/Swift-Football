@@ -23,7 +23,7 @@ struct LogoListRow: View {
             }
             .indicator(.activity)
             .aspectRatio(contentMode: .fit)
-            .frame(width: 40, height: 40)
+            .frame(width: 40, height: 30)
             
             Text(listable.name ?? "")
                 .padding(.leading, 8)

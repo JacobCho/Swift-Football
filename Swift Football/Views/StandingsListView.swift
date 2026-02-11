@@ -68,6 +68,8 @@ struct StandingsListView: View {
 }
 
 struct StandingsHeader: View {
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+    
     var body: some View {
         HStack {
             Text("Team")
@@ -85,7 +87,7 @@ struct StandingsHeader: View {
             .frame(alignment: .trailing)
             .padding(.trailing, 8)
         }
-        .foregroundStyle(.black)
+        .foregroundStyle(colorScheme == .light ? .black : .white)
         .font(.system(size: 11, weight: .semibold))
     }
 }

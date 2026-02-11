@@ -37,6 +37,7 @@ struct LeaguesListView: View {
                                 LogoListRow(listable: league)
                             }
                         }
+                        .frame(maxHeight: 40)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                     }

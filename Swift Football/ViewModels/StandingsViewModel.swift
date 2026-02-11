@@ -117,7 +117,7 @@ class StandingsViewModel: ObservableObject {
         case .promotion:
             return .green
         case .promotionPlayoffs:
-            return .gray
+            return .mint
         case .finals:
             return .orange
         case .nextRound:
@@ -125,7 +125,7 @@ class StandingsViewModel: ObservableObject {
         case .lowerTableRound:
             return .indigo
         case .other(_):
-            return .clear
+            return .gray
         }
     }
     
@@ -137,12 +137,21 @@ class StandingsViewModel: ObservableObject {
         let descriptionSet = Set(filtered)
         let sorted = descriptionSet.sorted { standing1, standing2 in
             switch (standing1, standing2) {
+            case (.finals, _): return true
+            case (_, .finals): return false
             case (.championsLeague, _): return true
             case (_, .championsLeague): return false
             case (.europaLeague, _): return true
             case (_, .europaLeague): return false
             case (.conferenceLeague, _): return true
             case (_, .conferenceLeague): return false
+            case (.promotion, _): return true
+            case (_, .promotion): return false
+            case (.promotionPlayoffs, _): return true
+            case (_, .promotionPlayoffs): return false
+            case (.relegationPlayoff, _): return true
+            case (_, .relegationPlayoff): return false
+                
             default: return false
             }
         }
