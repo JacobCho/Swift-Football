@@ -37,12 +37,12 @@ struct LeaguesListView: View {
                                 LogoListRow(listable: league)
                             }
                         }
-                        .frame(maxHeight: 40)
+                        .frame(maxHeight: 30)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                     }
                     .listStyle(.plain)
-                    .listRowSpacing(-20)
+                    .listRowSpacing(10)
                     .navigationBarTitle("Leagues")
                     .safeAreaInset(edge: .top) {
                         Color.clear.frame(height: 10)

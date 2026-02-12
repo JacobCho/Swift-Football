@@ -51,10 +51,10 @@ struct CountriesListView: View {
                         }
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
-                        .frame(maxHeight: 40)
+                        .frame(maxHeight: 30)
                     }
                     .listStyle(.plain)
-                    .listRowSpacing(-20)
+                    .listRowSpacing(10)
                     .safeAreaInset(edge: .top) {
                         Color.clear.frame(height: 10)
                     }
