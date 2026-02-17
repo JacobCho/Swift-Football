@@ -13,6 +13,7 @@ import SDWebImageSVGCoder
 struct Main: App {
     @StateObject var coordinator = Coordinator()
     
+    
     init() {
             SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
         }
@@ -20,13 +21,23 @@ struct Main: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $coordinator.path) {
-                coordinator.view(for: .countries)
+                Button {
+                    coordinator.isSheetPresented = true
+                } label: {
+                    Text("Show Sheet")
+                }
+                //coordinator.view(for: .countries)
             }
+            .sheet(isPresented: $coordinator.isSheetPresented) {
+                NavigationStack {
+                    coordinator.view(for: .countries)
+                }
+            }
+//            .sheet(item: $coordinator.presentedSheet) { destination in
+//                coordinator.view(for: destination)
+//            }
             .environmentObject(coordinator)
         }
     }
 }
 
-#Preview {
-    CountriesListView()
-}

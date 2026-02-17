@@ -8,14 +8,26 @@
 import SwiftUI
 internal import Combine
 
-enum Route: Hashable {
+enum Route: Identifiable, Hashable {
     case countries
     case leagues(country: Country)
     case standings(details: LeagueDetails)
+    
+    var id: String {
+        switch self {
+        case .countries:
+            return "countries"
+        case .leagues(_):
+            return "leagues"
+        case .standings(_):
+            return "details"
+        }
+    }
 }
 
 class Coordinator: ObservableObject {
     @Published var path = NavigationPath()
+    @Published var isSheetPresented = false
     
     func pop() {
         path.removeLast()
@@ -23,6 +35,14 @@ class Coordinator: ObservableObject {
     
     func push(destination: Route) {
         path.append(destination)
+    }
+    
+    func presentSheet() {
+        isSheetPresented = true
+    }
+    
+    func dismissSheet() {
+        isSheetPresented = false
     }
     
     @ViewBuilder

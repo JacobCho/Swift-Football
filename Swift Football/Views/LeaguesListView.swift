@@ -47,6 +47,12 @@ struct LeaguesListView: View {
                     .safeAreaInset(edge: .top) {
                         Color.clear.frame(height: 10)
                     }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            CloseButton()
+                                .environmentObject(coordinator)
+                        }
+                    }
                     .navigationDestination(for: LeagueDetails.self) { details in
                         coordinator.view(for: .standings(details: details))
                     }

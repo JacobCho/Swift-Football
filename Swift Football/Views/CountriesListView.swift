@@ -59,6 +59,12 @@ struct CountriesListView: View {
                         Color.clear.frame(height: 10)
                     }
                     .searchable(text: $searchText, prompt: "Search countries")
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            CloseButton()
+                                .environmentObject(coordinator)
+                        }
+                    }
                     .navigationDestination(for: Country.self) { country in
                         coordinator.view(for: .leagues(country: country))
                     }
