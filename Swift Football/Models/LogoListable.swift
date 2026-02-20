@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol LogoListable: Identifiable {
+protocol LogoListable {
     var id: Int { get }
     var name: String? { get }
     var logo: String? { get }

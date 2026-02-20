@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Country: Identifiable, Decodable, Hashable, LogoListable {
+struct CountryDTO: Identifiable, Decodable, Hashable, LogoListable {
     var id: Int = 0
     let name: String?
     let code: String?
@@ -17,5 +18,20 @@ struct Country: Identifiable, Decodable, Hashable, LogoListable {
         case name
         case code
         case logo = "flag"
+    }
+}
+
+@Model
+class Country: LogoListable {
+    var id: Int
+    var name: String?
+    var code: String?
+    var logo: String?
+    
+    init(dto: CountryDTO) {
+        self.id = dto.id
+        self.name = dto.name
+        self.code = dto.code
+        self.logo = dto.logo
     }
 }

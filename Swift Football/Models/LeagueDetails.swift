@@ -11,7 +11,7 @@ struct LeagueDetails: Identifiable, Decodable, Equatable, Hashable {
     
     var id: Int = 0
     let league: League?
-    let country: Country?
+    let country: CountryDTO?
     let seasons: [Season]?
     
     enum CodingKeys: String, CodingKey {

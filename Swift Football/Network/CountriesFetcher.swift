@@ -9,11 +9,11 @@ import Foundation
 internal import Combine
 
 struct CountriesResponse: Decodable {
-    var countries: [Country]
+    var countries: [CountryDTO]
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.countries = try container.decode([Country].self, forKey: .countries)
+        self.countries = try container.decode([CountryDTO].self, forKey: .countries)
         self.countries = self.countries.enumerated().map { (index, element) in
             var country = element
             country.id = index

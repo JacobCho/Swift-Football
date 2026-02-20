@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 internal import Combine
 
 enum Route: Identifiable, Hashable {
@@ -28,6 +29,11 @@ enum Route: Identifiable, Hashable {
 class Coordinator: ObservableObject {
     @Published var path = NavigationPath()
     @Published var isSheetPresented = false
+    var modelContext: ModelContext
+    
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
     
     func pop() {
         path.removeLast()
@@ -49,7 +55,7 @@ class Coordinator: ObservableObject {
     func view(for route: Route) -> some View {
         switch route {
         case .countries:
-            CountriesListView()
+            CountriesListView(modelContext: modelContext)
         case .leagues(let country):
             LeaguesListView(country: country)
         case .standings(let details):

@@ -6,17 +6,25 @@
 //
 
 import SwiftUI
+import SwiftData
 import SDWebImage
 import SDWebImageSVGCoder
 
 @main
 struct Main: App {
-    @StateObject var coordinator = Coordinator()
-    
+    @StateObject var coordinator: Coordinator
+    var container: ModelContainer
     
     init() {
-            SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
+        SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
+        do {
+            container = try ModelContainer(for: Schema([Country.self]), configurations: [])
+            let coordinator = Coordinator(modelContext: container.mainContext)
+            _coordinator = StateObject(wrappedValue: coordinator)
+        } catch {
+            fatalError("Failed to create ModelContainer")
         }
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -26,17 +34,14 @@ struct Main: App {
                 } label: {
                     Text("Show Sheet")
                 }
-                //coordinator.view(for: .countries)
             }
             .sheet(isPresented: $coordinator.isSheetPresented) {
                 NavigationStack {
                     coordinator.view(for: .countries)
                 }
             }
-//            .sheet(item: $coordinator.presentedSheet) { destination in
-//                coordinator.view(for: destination)
-//            }
             .environmentObject(coordinator)
+            .modelContainer(container)
         }
     }
 }
