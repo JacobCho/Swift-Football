@@ -58,7 +58,6 @@ class StandingsFetcher: DataFetcher {
             cachedResponse = response
             return response
         }  catch {
-            print(error)
             throw NetworkError.decodingError(error)
         }
     }

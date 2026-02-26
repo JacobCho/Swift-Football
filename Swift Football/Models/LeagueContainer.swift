@@ -8,5 +8,5 @@
 import Foundation
 
 struct LeagueContainer: Decodable {
-    let league: League?
+    let league: LeagueDTO?
 }

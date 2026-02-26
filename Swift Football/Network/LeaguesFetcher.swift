@@ -9,16 +9,17 @@ import Foundation
 internal import Combine
 
 struct LeaguesResponse: Decodable {
-    var leagues: [LeagueDetails]
+    var leaguesDetails: [LeagueDetails]
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.leagues = try container.decode([LeagueDetails].self, forKey: .leagues)
-        self.leagues = self.leagues.map { element in
+        self.leaguesDetails = try container.decode([LeagueDetails].self, forKey: .leagues)
+        self.leaguesDetails = self.leaguesDetails.map { element in
             var detail = element
             if let id = element.league?.id {
                 detail.id = id
             }
+            detail.league?.code = element.country?.code
             return detail
         }
     }

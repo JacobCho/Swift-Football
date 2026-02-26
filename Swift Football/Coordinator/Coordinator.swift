@@ -57,7 +57,7 @@ class Coordinator: ObservableObject {
         case .countries:
             CountriesListView(modelContext: modelContext)
         case .leagues(let country):
-            LeaguesListView(country: country)
+            LeaguesListView(country: country, modelContext: modelContext)
         case .standings(let details):
             StandingsListView(leagueDetails: details)
         }

@@ -7,44 +7,41 @@
 
 import Foundation
 internal import Combine
+import SwiftData
 
 @MainActor
-class LeaguesViewModel: ObservableObject {
-    @Published var leagues: [LeagueDetails] = []
+class LeaguesViewModel: BaseViewModel {
+    @Published var leagues: [League] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     private let leaguesFetcher = LeaguesFetcher()
     
-    func fetchLeagues(id: Int? = nil,
-                      name: String? = nil,
-                      country: String? = nil,
-                      code: String? = nil,
-                      season: Int? = nil,
-                      team: Int? = nil,
-                      type: LeagueType? = nil,
-                      current: Bool? = nil,
-                      search: String? = nil,
-                      last: Int? = nil) async {
+    func fetchLeagues(code: String) async {
         if isLoading { return }
         isLoading = true
         errorMessage = nil
         
-        do {
-            let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(id: id,
-                                                                                  name: name,
-                                                                                  country: country,
-                                                                                  code: code,
-                                                                                  season: season,
-                                                                                  team: team,
-                                                                                  type: type,
-                                                                                  current: current,
-                                                                                  search: search,
-                                                                                  last: last)
-            await MainActor.run {
-                leagues = response.leagues
+        let predicate = #Predicate<League> { league in
+            league.code == code
+        }
+        
+        let savedLeagues = fetch(for: League.self, predicate: predicate)
+        
+        if savedLeagues.count > 0 {
+            leagues = savedLeagues
+        } else {
+            do {
+                let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(code: code)
+                leagues = response.leaguesDetails.compactMap { details in
+                    guard let league = details.league else {
+                        return nil
+                    }
+                    return League(dto: league)
+                }
+                saveData(leagues)
+            } catch {
+                errorMessage = error.localizedDescription
             }
-        } catch {
-            errorMessage = error.localizedDescription
         }
         isLoading = false
     }

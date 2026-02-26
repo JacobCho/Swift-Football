@@ -10,7 +10,7 @@ import Foundation
 struct LeagueDetails: Identifiable, Decodable, Equatable, Hashable {
     
     var id: Int = 0
-    let league: League?
+    var league: LeagueDTO?
     let country: CountryDTO?
     let seasons: [Season]?
     

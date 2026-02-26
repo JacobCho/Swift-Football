@@ -6,11 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LeaguesListView: View {
     @EnvironmentObject var coordinator: Coordinator
-    @StateObject var viewModel = LeaguesViewModel()
+    @StateObject var viewModel: LeaguesViewModel
     let country: Country
+    
+    init(country: Country, modelContext: ModelContext) {
+        self.country = country
+        let viewModel = LeaguesViewModel(modelContext: modelContext)
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack {
@@ -22,7 +29,7 @@ struct LeaguesListView: View {
                         .foregroundColor(.red)
                     Button("Retry") {
                         Task {
-                            await viewModel.fetchLeagues(code: country.code)
+                            await viewModel.fetchLeagues(code: country.code ?? "")
                         }
                     }
                 }
@@ -30,12 +37,10 @@ struct LeaguesListView: View {
                 if viewModel.leagues.count == 0 {
                     Text("Nothing to display!")
                 } else {
-                    List(viewModel.leagues) { leagueDetails in
+                    List(viewModel.leagues) { league in
                         ZStack {
-                            NavigationLink("", value: leagueDetails)
-                            if let league = leagueDetails.league {
-                                LogoListRow(listable: league)
-                            }
+                            NavigationLink("", value: league)
+                            LogoListRow(listable: league)
                         }
                         .frame(maxHeight: 30)
                         .listRowSeparator(.hidden)
@@ -61,7 +66,7 @@ struct LeaguesListView: View {
         }
         .onAppear {
             Task {
-                await viewModel.fetchLeagues(code: country.code)
+                await viewModel.fetchLeagues(code: country.code ?? "")
             }
         }
     }
