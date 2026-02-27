@@ -29,10 +29,12 @@ enum Route: Identifiable, Hashable {
 class Coordinator: ObservableObject {
     @Published var path = NavigationPath()
     @Published var isSheetPresented = false
-    var modelContext: ModelContext
+    private var modelContext: ModelContext
+    private var swiftDataProvider: SwiftDataProvider
     
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+        self.swiftDataProvider = SwiftDataProvider(modelContext: modelContext)
     }
     
     func pop() {
@@ -55,9 +57,9 @@ class Coordinator: ObservableObject {
     func view(for route: Route) -> some View {
         switch route {
         case .countries:
-            CountriesListView(modelContext: modelContext)
+            CountriesListView(dataProvider: swiftDataProvider)
         case .leagues(let country):
-            LeaguesListView(country: country, modelContext: modelContext)
+            LeaguesListView(country: country, dataProvider: swiftDataProvider)
         case .standings(let details):
             StandingsListView(leagueDetails: details)
         }

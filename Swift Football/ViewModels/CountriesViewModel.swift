@@ -15,13 +15,18 @@ class CountriesViewModel: BaseViewModel {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     private let countriesFetcher = CountriesFetcher()
+    private let dataProvider: SwiftDataProvider
+    
+    init(dataProvider: SwiftDataProvider) {
+        self.dataProvider = dataProvider
+    }
     
     func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async {
         if isLoading || countries.count > 0 { return }
         isLoading = true
         errorMessage = nil
         
-        let savedCountries = fetch(for: Country.self)
+        let savedCountries = await dataProvider.fetch(for: Country.self)
         
         if savedCountries.count > 0 {
             countries = savedCountries
@@ -29,7 +34,7 @@ class CountriesViewModel: BaseViewModel {
             do {
                 let response: CountriesResponse = try await countriesFetcher.fetchCountries(name: name, code: code, search: search)
                 countries = response.countries.map { Country(dto: $0) }
-                saveData(countries)
+                await dataProvider.saveData(countries)
             } catch {
                 errorMessage = error.localizedDescription
             }

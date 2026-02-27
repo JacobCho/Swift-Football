@@ -13,8 +13,8 @@ struct CountriesListView: View {
     @StateObject private var viewModel: CountriesViewModel
     @State private var searchText = ""
     
-    init(modelContext: ModelContext) {
-        let viewModel = CountriesViewModel(modelContext: modelContext)
+    init(dataProvider: SwiftDataProvider) {
+        let viewModel = CountriesViewModel(dataProvider: dataProvider)
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     

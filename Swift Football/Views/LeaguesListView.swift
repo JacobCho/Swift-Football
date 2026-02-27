@@ -13,9 +13,9 @@ struct LeaguesListView: View {
     @StateObject var viewModel: LeaguesViewModel
     let country: Country
     
-    init(country: Country, modelContext: ModelContext) {
+    init(country: Country, dataProvider: SwiftDataProvider) {
         self.country = country
-        let viewModel = LeaguesViewModel(modelContext: modelContext)
+        let viewModel = LeaguesViewModel(dataProvider: dataProvider)
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     

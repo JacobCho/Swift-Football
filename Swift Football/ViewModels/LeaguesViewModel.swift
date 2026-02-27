@@ -15,6 +15,11 @@ class LeaguesViewModel: BaseViewModel {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     private let leaguesFetcher = LeaguesFetcher()
+    private let dataProvider: SwiftDataProvider
+    
+    init(dataProvider: SwiftDataProvider) {
+        self.dataProvider = dataProvider
+    }
     
     func fetchLeagues(code: String) async {
         if isLoading { return }
@@ -25,7 +30,7 @@ class LeaguesViewModel: BaseViewModel {
             league.code == code
         }
         
-        let savedLeagues = fetch(for: League.self, predicate: predicate)
+        let savedLeagues = await dataProvider.fetch(for: League.self, predicate: predicate)
         
         if savedLeagues.count > 0 {
             leagues = savedLeagues
@@ -38,7 +43,7 @@ class LeaguesViewModel: BaseViewModel {
                     }
                     return League(dto: league)
                 }
-                saveData(leagues)
+                await dataProvider.saveData(leagues)
             } catch {
                 errorMessage = error.localizedDescription
             }
