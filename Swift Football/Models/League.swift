@@ -26,7 +26,7 @@ struct LeagueDTO: Identifiable, Decodable, LogoListable, Hashable {
 }
 
 @Model
-class League: LogoListable {
+class League: LogoListable, Selectable {
     var id: Int
     var name: String?
     var type: LeagueType?

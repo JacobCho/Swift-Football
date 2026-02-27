@@ -21,7 +21,7 @@ struct Main: App {
             container = try ModelContainer(for: Schema([Country.self, League.self]), configurations: [])
             let coordinator = Coordinator(modelContext: container.mainContext)
             _coordinator = StateObject(wrappedValue: coordinator)
-            try container.mainContext.delete(model: League.self)
+            
         } catch {
             fatalError("Failed to create ModelContainer")
         }

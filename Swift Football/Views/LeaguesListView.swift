@@ -38,14 +38,17 @@ struct LeaguesListView: View {
                     Text("Nothing to display!")
                 } else {
                     List(viewModel.leagues) { league in
-                        ZStack {
-                            NavigationLink("", value: league)
+                        Button(action: {
+                            league.isSelected.toggle()
+                        }) {
                             LogoListRow(listable: league)
+                                .frame(maxHeight: 30)
                         }
-                        .frame(maxHeight: 30)
+                        .buttonStyle(.plain)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                     }
+                    
                     .listStyle(.plain)
                     .listRowSpacing(10)
                     .navigationBarTitle("Leagues")

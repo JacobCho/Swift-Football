@@ -29,6 +29,10 @@ struct LogoListRow: View {
                 .padding(.leading, 8)
                 .fontWeight(.semibold)
             Spacer()
+            if let selectable = listable as? Selectable, selectable.isSelected {
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                    .background(Color(.secondarySystemBackground))
+            }
         }
         .padding()
         .background(Color(.secondarySystemBackground))
