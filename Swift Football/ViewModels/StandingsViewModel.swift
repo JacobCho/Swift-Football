@@ -16,10 +16,8 @@ struct StandingsDescriptionLegend: Identifiable {
 }
 
 @MainActor
-class StandingsViewModel: ObservableObject {
+class StandingsViewModel: BaseViewModel {
     @Published var containers: [LeagueContainer] = []
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
     private let standingsFetcher = StandingsFetcher()
     
     func flattenedStandings() -> [Standing]? {
@@ -161,9 +159,8 @@ class StandingsViewModel: ObservableObject {
     }
     
     func fetchStandings(league: Int? = nil, season: Int? = nil, team: Int? = nil) async {
-        if isLoading { return }
-        isLoading = true
-        errorMessage = nil
+        if loadState == .loading || loadState == .finished { return }
+        loadState = .loading
         
         do {
             let response: StandingsResponse = try await standingsFetcher.fetchStandings(league: league, season: season, team: team)
@@ -171,8 +168,10 @@ class StandingsViewModel: ObservableObject {
                 containers = response.containers
             }
         } catch {
-            errorMessage = error.localizedDescription
+            if let descError = error as? (any DescriptiveError) {
+                loadState = .error(descError.description)
+            }
         }
-        isLoading = false
+        loadingFinished(isEmpty: containers.count == 0)
     }
 }

@@ -33,18 +33,8 @@ struct CountriesListView: View {
     
     var body: some View {
         VStack {
-            if viewModel.isLoading {
-                ProgressView()
-            } else if let error = viewModel.errorMessage {
-                VStack {
-                    Text(error)
-                        .foregroundColor(.red)
-                    Button("Retry") {
-                        Task {
-                            await viewModel.fetchCountries()
-                        }
-                    }
-                }
+            if viewModel.loadState != .finished {
+                LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
                 if filtered.count == 0 {
                     Text("Nothing to display!")
@@ -78,11 +68,15 @@ struct CountriesListView: View {
             }
         }
         .onAppear {
-            Task {
-                await viewModel.fetchCountries()
-            }
+            fetch()
         }
         .navigationBarTitle("Countries")
+    }
+    
+    func fetch() {
+        Task {
+            await viewModel.fetchCountries()
+        }
     }
 }
 

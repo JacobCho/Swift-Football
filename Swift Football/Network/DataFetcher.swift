@@ -7,12 +7,31 @@
 
 import Foundation
 
-enum NetworkError: Error {
+protocol DescriptiveError: Error {
+    var description: String { get }
+}
+
+enum NetworkError: DescriptiveError {
     case invalidURL
     case invalidResponse
     case decodingError(Error)
     case serverError(Int)
     case testFileError
+    
+    var description: String {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .invalidResponse:
+            return "Invalid Response"
+        case .decodingError(let error):
+            return error.localizedDescription
+        case .serverError(let code):
+            return "Server Error Code: \(code)"
+        case .testFileError:
+            return "Error loading mock file"
+        }
+    }
 }
 
 enum Endpoint: String {
@@ -36,27 +55,16 @@ enum Endpoint: String {
         case .countries:
             return true
         case .leagues:
-            return true
+            return false
         case .standings:
-            return true
+            return false
         }
     }
 }
 
 class DataFetcher {
     
-    var cachedResponse: Decodable?
-    var cachedParameters: [String: String]?
-    
     init() {}
-    
-    func shouldReturnCache(new: [String: String]) -> Bool {
-        guard let cachedParams = cachedParameters else {
-            return false
-        }
-        
-        return new == cachedParams
-    }
     
     func fetch<T: Decodable>(endPoint: Endpoint, parameters: [String: String]? = nil) async throws -> T {
         if endPoint.shouldUseMock() {
@@ -66,12 +74,6 @@ class DataFetcher {
         let urlString = "https://v3.football.api-sports.io/\(endPoint.rawValue)?"
         guard var components = URLComponents(string: urlString) else {
             throw NetworkError.invalidURL
-        }
-        
-        if let cached = cachedResponse as? T, let params = parameters, shouldReturnCache(new: params) {
-            return cached
-        } else {
-            cachedParameters = parameters
         }
         
         if let parameters {

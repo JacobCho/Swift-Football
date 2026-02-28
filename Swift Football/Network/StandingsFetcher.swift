@@ -21,8 +21,12 @@ struct StandingsResponse: Decodable {
     }
 }
 
-enum StandingsError: Error {
+enum StandingsError: DescriptiveError {
     case missingParameters
+    
+    var description: String {
+        return "Missing Parameters in standings call"
+    }
 }
 
 class StandingsFetcher: DataFetcher {

@@ -13,18 +13,8 @@ struct StandingsListView: View {
     
     var body: some View {
         VStack {
-            if viewModel.isLoading {
-                ProgressView()
-            } else if let error = viewModel.errorMessage {
-                VStack {
-                    Text(error)
-                        .foregroundColor(.red)
-                    Button("Retry") {
-                        Task {
-                            await viewModel.fetchStandings(league: leagueDetails.id, season: 2024)
-                        }
-                    }
-                }
+            if viewModel.loadState != .finished {
+                LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
                 if let standings: [Standing] = viewModel.flattenedStandings(), standings.count > 0 {
                     VStack(spacing: -20) {
@@ -60,9 +50,13 @@ struct StandingsListView: View {
             }
         }
         .onAppear {
-            Task {
-                await viewModel.fetchStandings(league: leagueDetails.id, season: 2024)
-            }
+            fetch()
+        }
+    }
+    
+    func fetch() {
+        Task {
+            await viewModel.fetchStandings(league: leagueDetails.id, season: 2024)
         }
     }
 }

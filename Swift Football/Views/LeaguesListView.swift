@@ -21,56 +21,46 @@ struct LeaguesListView: View {
     
     var body: some View {
         VStack {
-            if viewModel.isLoading {
-                ProgressView()
-            } else if let error = viewModel.errorMessage {
-                VStack {
-                    Text(error)
-                        .foregroundColor(.red)
-                    Button("Retry") {
-                        Task {
-                            await viewModel.fetchLeagues(code: country.code ?? "")
-                        }
+            if viewModel.loadState != .finished {
+                LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
+            } else {
+                List(viewModel.leagues) { league in
+                    Button(action: {
+                        league.isSelected.toggle()
+                    }) {
+                        LogoListRow(listable: league)
+                            .frame(maxHeight: 30)
+                    }
+                    .buttonStyle(.plain)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                }
+                
+                .listStyle(.plain)
+                .listRowSpacing(10)
+                .navigationBarTitle("Leagues")
+                .safeAreaInset(edge: .top) {
+                    Color.clear.frame(height: 10)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        CloseButton()
+                            .environmentObject(coordinator)
                     }
                 }
-            } else {
-                if viewModel.leagues.count == 0 {
-                    Text("Nothing to display!")
-                } else {
-                    List(viewModel.leagues) { league in
-                        Button(action: {
-                            league.isSelected.toggle()
-                        }) {
-                            LogoListRow(listable: league)
-                                .frame(maxHeight: 30)
-                        }
-                        .buttonStyle(.plain)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                    }
-                    
-                    .listStyle(.plain)
-                    .listRowSpacing(10)
-                    .navigationBarTitle("Leagues")
-                    .safeAreaInset(edge: .top) {
-                        Color.clear.frame(height: 10)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            CloseButton()
-                                .environmentObject(coordinator)
-                        }
-                    }
-                    .navigationDestination(for: LeagueDetails.self) { details in
-                        coordinator.view(for: .standings(details: details))
-                    }
+                .navigationDestination(for: LeagueDetails.self) { details in
+                    coordinator.view(for: .standings(details: details))
                 }
             }
         }
         .onAppear {
-            Task {
-                await viewModel.fetchLeagues(code: country.code ?? "")
-            }
+            fetch()
+        }
+    }
+    
+    func fetch() {
+        Task {
+            await viewModel.fetchLeagues(code: country.code ?? "")
         }
     }
 }

@@ -12,8 +12,6 @@ import SwiftData
 @MainActor
 class CountriesViewModel: BaseViewModel {
     @Published var countries: [Country] = []
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
     private let countriesFetcher = CountriesFetcher()
     private let dataProvider: SwiftDataProvider
     
@@ -22,9 +20,8 @@ class CountriesViewModel: BaseViewModel {
     }
     
     func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async {
-        if isLoading || countries.count > 0 { return }
-        isLoading = true
-        errorMessage = nil
+        if loadState == .loading || loadState == .finished { return }
+        loadState = .loading
         
         let savedCountries = await dataProvider.fetch(for: Country.self)
         
@@ -36,9 +33,9 @@ class CountriesViewModel: BaseViewModel {
                 countries = response.countries.map { Country(dto: $0) }
                 await dataProvider.saveData(countries)
             } catch {
-                errorMessage = error.localizedDescription
+                loadState = .error(error.description)
             }
         }
-        isLoading = false
+        loadingFinished(isEmpty: countries.count == 0)
     }
 }

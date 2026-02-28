@@ -12,8 +12,6 @@ import SwiftData
 @MainActor
 class LeaguesViewModel: BaseViewModel {
     @Published var leagues: [League] = []
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
     private let leaguesFetcher = LeaguesFetcher()
     private let dataProvider: SwiftDataProvider
     
@@ -22,9 +20,8 @@ class LeaguesViewModel: BaseViewModel {
     }
     
     func fetchLeagues(code: String) async {
-        if isLoading { return }
-        isLoading = true
-        errorMessage = nil
+        if loadState == .loading || loadState == .finished { return }
+        loadState = .loading
         
         let predicate = #Predicate<League> { league in
             league.code == code
@@ -45,10 +42,10 @@ class LeaguesViewModel: BaseViewModel {
                 }
                 await dataProvider.saveData(leagues)
             } catch {
-                errorMessage = error.localizedDescription
+                loadState = .error(error.description)
             }
         }
-        isLoading = false
+        loadingFinished(isEmpty: leagues.count == 0)
     }
 }
 
