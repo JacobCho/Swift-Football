@@ -16,9 +16,9 @@ enum LoadState: Equatable {
     case finished
 }
 
-@MainActor
-class BaseViewModel: ObservableObject {
-    @Published var loadState: LoadState = .empty
+@Observable
+class BaseViewModel {
+    var loadState: LoadState = .empty
     
     func loadingFinished(isEmpty: Bool) {
         // Don't override an error state

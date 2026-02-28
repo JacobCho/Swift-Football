@@ -9,9 +9,8 @@ import Foundation
 internal import Combine
 import SwiftData
 
-@MainActor
 class LeaguesViewModel: BaseViewModel {
-    @Published var leagues: [League] = []
+    var leagues: [League] = []
     private let leaguesFetcher = LeaguesFetcher()
     private let dataProvider: SwiftDataProvider
     

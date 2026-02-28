@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StandingsListView: View {
-    @StateObject var viewModel = StandingsViewModel()
+    @State private var viewModel = StandingsViewModel()
     let leagueDetails: LeagueDetails
     
     var body: some View {

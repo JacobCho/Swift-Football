@@ -15,9 +15,8 @@ struct StandingsDescriptionLegend: Identifiable {
     let description: String?
 }
 
-@MainActor
 class StandingsViewModel: BaseViewModel {
-    @Published var containers: [LeagueContainer] = []
+    var containers: [LeagueContainer] = []
     private let standingsFetcher = StandingsFetcher()
     
     func flattenedStandings() -> [Standing]? {

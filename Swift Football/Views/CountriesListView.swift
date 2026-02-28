@@ -10,12 +10,12 @@ import SwiftData
 
 struct CountriesListView: View {
     @EnvironmentObject var coordinator: Coordinator
-    @StateObject private var viewModel: CountriesViewModel
+    @State private var viewModel: CountriesViewModel
     @State private var searchText = ""
     
     init(dataProvider: SwiftDataProvider) {
         let viewModel = CountriesViewModel(dataProvider: dataProvider)
-        _viewModel = StateObject(wrappedValue: viewModel)
+        _viewModel = State(initialValue: viewModel)
     }
     
     var filtered: [Country] {

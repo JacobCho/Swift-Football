@@ -10,13 +10,13 @@ import SwiftData
 
 struct LeaguesListView: View {
     @EnvironmentObject var coordinator: Coordinator
-    @StateObject var viewModel: LeaguesViewModel
+    @State private var viewModel: LeaguesViewModel
     let country: Country
     
     init(country: Country, dataProvider: SwiftDataProvider) {
         self.country = country
         let viewModel = LeaguesViewModel(dataProvider: dataProvider)
-        _viewModel = StateObject(wrappedValue: viewModel)
+        _viewModel = State(initialValue: viewModel)
     }
     
     var body: some View {

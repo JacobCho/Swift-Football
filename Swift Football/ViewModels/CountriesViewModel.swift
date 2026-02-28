@@ -9,9 +9,8 @@ import Foundation
 internal import Combine
 import SwiftData
 
-@MainActor
 class CountriesViewModel: BaseViewModel {
-    @Published var countries: [Country] = []
+    var countries: [Country] = []
     private let countriesFetcher = CountriesFetcher()
     private let dataProvider: SwiftDataProvider
     
