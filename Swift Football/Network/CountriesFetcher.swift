@@ -33,7 +33,7 @@ class CountriesFetcher: DataFetcher {
     /// code: Code of the country; 2 - 6 chars
     /// search: Name of the country; >= 3 chars
     
-    func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async throws(NetworkError) -> CountriesResponse {
+    func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async throws -> CountriesResponse {
         var parameters: [String: String] = [:]
         
         if let name {
@@ -50,7 +50,7 @@ class CountriesFetcher: DataFetcher {
             let response: CountriesResponse = try await self.fetch(endPoint: .countries, parameters: parameters)
             return response
         }  catch {
-            throw .decodingError(error)
+            throw error
         }
     }
 }

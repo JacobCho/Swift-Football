@@ -52,7 +52,7 @@ class LeaguesFetcher: DataFetcher {
                       type: LeagueType? = nil,
                       current: Bool? = nil,
                       search: String? = nil,
-                      last: Int? = nil) async throws(NetworkError) -> LeaguesResponse {
+                      last: Int? = nil) async throws -> LeaguesResponse {
         do {
             var parameters: [String: String] = [:]
             
@@ -90,7 +90,7 @@ class LeaguesFetcher: DataFetcher {
             let response: LeaguesResponse = try await self.fetch(endPoint: .leagues, parameters: parameters)
             return response
         } catch {
-            throw NetworkError.decodingError(error)
+            throw error
         }
     }
 }

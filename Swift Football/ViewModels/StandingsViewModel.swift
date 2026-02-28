@@ -164,9 +164,7 @@ class StandingsViewModel: BaseViewModel {
         
         do {
             let response: StandingsResponse = try await standingsFetcher.fetchStandings(league: league, season: season, team: team)
-            await MainActor.run {
-                containers = response.containers
-            }
+            containers = response.containers
         } catch {
             if let descError = error as? (any DescriptiveError) {
                 loadState = .error(descError.description)

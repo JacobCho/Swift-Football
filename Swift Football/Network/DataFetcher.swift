@@ -14,7 +14,7 @@ protocol DescriptiveError: Error {
 enum NetworkError: DescriptiveError {
     case invalidURL
     case invalidResponse
-    case decodingError(Error)
+    case decodingError
     case serverError(Int)
     case testFileError
     
@@ -24,8 +24,8 @@ enum NetworkError: DescriptiveError {
             return "Invalid URL"
         case .invalidResponse:
             return "Invalid Response"
-        case .decodingError(let error):
-            return error.localizedDescription
+        case .decodingError:
+            return "Could not decode JSON"
         case .serverError(let code):
             return "Server Error Code: \(code)"
         case .testFileError:
@@ -98,7 +98,12 @@ class DataFetcher {
             throw NetworkError.serverError(httpResponse.statusCode)
         }
         
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            let decoded = try JSONDecoder().decode(T.self, from: data)
+            return decoded
+        } catch {
+            throw NetworkError.decodingError
+        }
     }
     
     func fetchTestFiles<T: Decodable>(endPoint: Endpoint) throws -> T {

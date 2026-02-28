@@ -33,7 +33,9 @@ class CountriesViewModel: BaseViewModel {
                 countries = response.countries.map { Country(dto: $0) }
                 await dataProvider.saveData(countries)
             } catch {
-                loadState = .error(error.description)
+                if let descError = error as? DescriptiveError  {
+                    loadState = .error(descError.description)
+                }
             }
         }
         loadingFinished(isEmpty: countries.count == 0)

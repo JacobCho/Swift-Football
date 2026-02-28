@@ -61,7 +61,7 @@ class StandingsFetcher: DataFetcher {
             let response: StandingsResponse = try await self.fetch(endPoint: .standings, parameters: parameters)
             return response
         }  catch {
-            throw NetworkError.decodingError(error)
+            throw error
         }
     }
 }

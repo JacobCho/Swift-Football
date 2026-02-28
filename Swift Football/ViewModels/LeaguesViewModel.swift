@@ -34,15 +34,17 @@ class LeaguesViewModel: BaseViewModel {
         } else {
             do {
                 let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(code: code)
-                leagues = response.leaguesDetails.compactMap { details in
-                    guard let league = details.league else {
-                        return nil
+                    leagues = response.leaguesDetails.compactMap { details in
+                        guard let league = details.league else {
+                            return nil
+                        }
+                        return League(dto: league)
                     }
-                    return League(dto: league)
-                }
                 await dataProvider.saveData(leagues)
             } catch {
-                loadState = .error(error.description)
+                if let descError = error as? DescriptiveError  {
+                    loadState = .error(descError.description)
+                }
             }
         }
         loadingFinished(isEmpty: leagues.count == 0)
