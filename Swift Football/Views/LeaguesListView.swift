@@ -53,7 +53,7 @@ struct LeaguesListView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             fetch()
         }
     }

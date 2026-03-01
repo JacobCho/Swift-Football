@@ -17,11 +17,13 @@ struct LoadStateView: View {
         case .loading:
             ProgressView()
         case .empty:
-            Text("Nothing to display!")
+            EmptyStateView()
         case .error(let errorMsg):
-            VStack {
+            ContentUnavailableView {
+                Label("Connection Failed", systemImage: "network.slash")
+            } description: {
                 Text(errorMsg)
-                    .foregroundColor(.red)
+            } actions: {
                 Button("Retry") {
                     buttonAction()
                 }
@@ -30,5 +32,11 @@ struct LoadStateView: View {
             // Leave for other view
             EmptyView()
         }
+    }
+}
+
+struct EmptyStateView: View {
+    var body: some View {
+        ContentUnavailableView("No content to display", systemImage: "doc.richtext.fill")
     }
 }

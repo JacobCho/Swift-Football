@@ -37,7 +37,7 @@ struct CountriesListView: View {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
                 if filtered.count == 0 {
-                    Text("Nothing to display!")
+                    EmptyStateView()
                 } else {
                     List(filtered) { country in
                         ZStack {
@@ -54,7 +54,6 @@ struct CountriesListView: View {
                     .safeAreaInset(edge: .top) {
                         Color.clear.frame(height: 10)
                     }
-                    .searchable(text: $searchText, prompt: "Search countries")
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             CloseButton()
@@ -67,7 +66,8 @@ struct CountriesListView: View {
                 }
             }
         }
-        .onAppear {
+        .searchable(text: $searchText, prompt: "Search countries")
+        .task {
             fetch()
         }
         .navigationBarTitle("Countries")

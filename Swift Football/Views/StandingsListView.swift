@@ -45,7 +45,7 @@ struct StandingsListView: View {
                         }
                     }
                 } else {
-                    Text("Nothing to display!")
+                    EmptyStateView()
                 }
             }
         }
