@@ -10,12 +10,15 @@ import SwiftData
 internal import Combine
 
 enum Route: Identifiable, Hashable {
+    case home
     case countries
     case leagues(country: Country)
-    case standings(details: LeagueDetails)
+    case standings(league: League)
     
     var id: String {
         switch self {
+        case .home:
+            return "home"
         case .countries:
             return "countries"
         case .leagues(_):
@@ -56,12 +59,14 @@ class Coordinator: ObservableObject {
     @ViewBuilder
     func view(for route: Route) -> some View {
         switch route {
+        case .home:
+            HomeView(dataProvider: swiftDataProvider)
         case .countries:
             CountriesListView(dataProvider: swiftDataProvider)
         case .leagues(let country):
             LeaguesListView(country: country, dataProvider: swiftDataProvider)
-        case .standings(let details):
-            StandingsListView(leagueDetails: details)
+        case .standings(let league):
+            StandingsListView(league: league)
         }
     }
 }

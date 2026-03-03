@@ -10,6 +10,7 @@ import SDWebImageSwiftUI
 
 struct LogoListRow: View {
     var listable: any LogoListable
+    var showSelectable = true
     
     var body: some View {
         HStack() {
@@ -29,7 +30,7 @@ struct LogoListRow: View {
                 .padding(.leading, 8)
                 .fontWeight(.semibold)
             Spacer()
-            if let selectable = listable as? Selectable, selectable.isSelected {
+            if let selectable = listable as? Selectable, selectable.isSelected, showSelectable {
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                     .background(Color(.secondarySystemBackground))
             }

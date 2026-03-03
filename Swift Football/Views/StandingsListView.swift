@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StandingsListView: View {
     @State private var viewModel = StandingsViewModel()
-    let leagueDetails: LeagueDetails
+    let league: League
     
     var body: some View {
         VStack {
@@ -56,7 +56,7 @@ struct StandingsListView: View {
     
     func fetch() {
         Task {
-            await viewModel.fetchStandings(league: leagueDetails.id, season: 2024)
+            await viewModel.fetchStandings(league: league.id, season: 2024)
         }
     }
 }

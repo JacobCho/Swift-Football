@@ -29,11 +29,7 @@ struct Main: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $coordinator.path) {
-                Button {
-                    coordinator.isSheetPresented = true
-                } label: {
-                    Text("Show Sheet")
-                }
+                coordinator.view(for: .home)
             }
             .sheet(isPresented: $coordinator.isSheetPresented) {
                 NavigationStack {

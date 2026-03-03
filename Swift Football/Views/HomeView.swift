@@ -1,21 +1,19 @@
 //
-//  LeaguesListRow.swift
+//  HomeView.swift
 //  Swift Football
 //
-//  Created by Jacob Cho on 2026-01-28.
+//  Created by Jacob Cho on 2026-03-02.
 //
 
 import SwiftUI
 import SwiftData
 
-struct LeaguesListView: View {
+struct HomeView: View {
     @EnvironmentObject var coordinator: Coordinator
-    @State private var viewModel: LeaguesViewModel
-    let country: Country
+    @State private var viewModel: HomeViewModel
     
-    init(country: Country, dataProvider: SwiftDataProvider) {
-        self.country = country
-        let viewModel = LeaguesViewModel(dataProvider: dataProvider)
+    init(dataProvider: SwiftDataProvider) {
+        let viewModel = HomeViewModel(dataProvider: dataProvider)
         _viewModel = State(initialValue: viewModel)
     }
     
@@ -25,10 +23,9 @@ struct LeaguesListView: View {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
                 List(viewModel.leagues) { league in
-                    Button(action: {
-                        league.isSelected.toggle()
-                    }) {
-                        LogoListRow(listable: league)
+                    ZStack {
+                        NavigationLink("", value: league)
+                        LogoListRow(listable: league, showSelectable: false)
                             .frame(maxHeight: 30)
                     }
                     .buttonStyle(.plain)
@@ -38,16 +35,14 @@ struct LeaguesListView: View {
                 
                 .listStyle(.plain)
                 .listRowSpacing(10)
-                .navigationBarTitle("Leagues")
+                .navigationBarTitle("Swift Football")
                 .safeAreaInset(edge: .top) {
                     Color.clear.frame(height: 10)
                 }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        CloseButton()
-                            .environmentObject(coordinator)
-                    }
-                }            }
+                .navigationDestination(for: League.self) { league in
+                    coordinator.view(for: .standings(league: league))
+                }
+            }
         }
         .task {
             fetch()
@@ -56,9 +51,7 @@ struct LeaguesListView: View {
     
     func fetch() {
         Task {
-            await viewModel.fetchLeagues(code: country.code ?? "")
+            await viewModel.fetchSelectedLeagues()
         }
     }
 }
-
-
