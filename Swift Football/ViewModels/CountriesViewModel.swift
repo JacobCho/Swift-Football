@@ -22,8 +22,9 @@ class CountriesViewModel: BaseViewModel {
         if loadState == .loading || loadState == .finished { return }
         loadState = .loading
         
-        let savedCountries = await dataProvider.fetch(for: Country.self)
+        let sort: [SortDescriptor<Country>] = [SortDescriptor(\.name, order: .forward)]
         
+        let savedCountries = await dataProvider.fetch(for: Country.self, sortBy: sort)
         if savedCountries.count > 0 {
             countries = savedCountries
         } else {

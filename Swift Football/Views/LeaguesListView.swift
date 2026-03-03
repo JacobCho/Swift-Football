@@ -26,7 +26,7 @@ struct LeaguesListView: View {
             } else {
                 List(viewModel.leagues) { league in
                     Button(action: {
-                        league.isSelected.toggle()
+                        toggleLeagueSelection(league: league)
                     }) {
                         LogoListRow(listable: league)
                             .frame(maxHeight: 30)
@@ -52,6 +52,10 @@ struct LeaguesListView: View {
         .task {
             fetch()
         }
+    }
+    
+    func toggleLeagueSelection(league: League) {
+        viewModel.toggleLeagueSelection(league: league)
     }
     
     func fetch() {

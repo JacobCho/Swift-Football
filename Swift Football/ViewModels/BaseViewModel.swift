@@ -14,6 +14,7 @@ enum LoadState: Equatable {
     case empty
     case error(String)
     case finished
+    case refetching
 }
 
 @Observable

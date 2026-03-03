@@ -17,12 +17,16 @@ actor SwiftDataProvider {
     
     func fetch<T: PersistentModel>(for type: T.Type,
                                    predicate: Predicate<T>? = nil,
-                                   sortBy: [SortDescriptor<T>] = [SortDescriptor(\.id, order: .forward)]) -> [T] {
+                                   sortBy: [SortDescriptor<T>]? = nil) -> [T] {
+        var sort: [SortDescriptor<T>] = [SortDescriptor(\.id, order: .forward)]
+        if let sortBy {
+            sort.append(contentsOf: sortBy)
+        }
         let descriptor: FetchDescriptor<T>
         if let predicate {
-            descriptor = FetchDescriptor<T>(predicate: predicate, sortBy: sortBy)
+            descriptor = FetchDescriptor<T>(predicate: predicate, sortBy: sort)
         } else {
-            descriptor = FetchDescriptor<T>(sortBy: sortBy)
+            descriptor = FetchDescriptor<T>(sortBy: sort)
         }
         do {
             return try modelContext.fetch(descriptor)
@@ -38,5 +42,9 @@ actor SwiftDataProvider {
             }
             try? modelContext.save()
         }
+    }
+    
+    func save() {
+        try? modelContext.save()
     }
 }

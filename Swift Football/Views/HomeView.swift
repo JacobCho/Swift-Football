@@ -19,18 +19,27 @@ struct HomeView: View {
     
     var body: some View {
         VStack {
-            if viewModel.loadState != .finished {
+            if viewModel.loadState != .finished && viewModel.loadState != .refetching {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
-                List(viewModel.leagues) { league in
-                    ZStack {
-                        NavigationLink("", value: league)
-                        LogoListRow(listable: league, showSelectable: false)
-                            .frame(maxHeight: 30)
+                List {
+                    Section("Favourite Leagues") {
+                        ForEach(viewModel.leagues) { league in
+                            ZStack {
+                                NavigationLink("", value: league)
+                                LogoListRow(listable: league, showSelectable: false)
+                                    .frame(maxHeight: 30)
+                            }
+                            .buttonStyle(.plain)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                    .sectionActions {
+                        Button("", systemImage: "plus") {
+                            coordinator.isSheetPresented = true
+                        }
+                    }
                 }
                 
                 .listStyle(.plain)
@@ -42,6 +51,12 @@ struct HomeView: View {
                 .navigationDestination(for: League.self) { league in
                     coordinator.view(for: .standings(league: league))
                 }
+            }
+        }
+        .onChange(of: coordinator.isSheetPresented) { oldState, newState in
+            if newState == false {
+                viewModel.loadState = .refetching
+                fetch()
             }
         }
         .task {

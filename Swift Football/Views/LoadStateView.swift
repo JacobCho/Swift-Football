@@ -28,7 +28,7 @@ struct LoadStateView: View {
                     buttonAction()
                 }
             }
-        case .finished:
+        case .finished, .refetching:
             // Leave for other view
             EmptyView()
         }

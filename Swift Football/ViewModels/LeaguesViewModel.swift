@@ -48,5 +48,12 @@ class LeaguesViewModel: BaseViewModel {
         }
         loadingFinished(isEmpty: leagues.count == 0)
     }
+    
+    func toggleLeagueSelection(league: League) {
+        Task {
+            league.isSelected.toggle()
+            await dataProvider.save()
+        }
+    }
 }
 
