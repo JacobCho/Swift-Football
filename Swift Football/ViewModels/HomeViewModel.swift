@@ -42,5 +42,8 @@ class HomeViewModel: BaseViewModel {
         Task {
             await dataProvider.save()
         }
+        if leagues.count == 0 {
+            loadState = .empty
+        }
     }
 }

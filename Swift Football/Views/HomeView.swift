@@ -19,7 +19,9 @@ struct HomeView: View {
     
     var body: some View {
         VStack {
-            if viewModel.loadState != .finished && viewModel.loadState != .refetching {
+            if viewModel.loadState == .empty {
+                HomeEmptyStateView(buttonAction: showSheet)
+            } else if viewModel.loadState != .finished && viewModel.loadState != .refetching {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
                 List {
@@ -37,14 +39,14 @@ struct HomeView: View {
                         .onDelete(perform: deleteLeague)
                     }
                     .sectionActions {
-                        Button("", systemImage: "plus") {
-                            coordinator.isSheetPresented = true
+                        Button("", systemImage: "plus.app") {
+                            showSheet()
                         }
                     }
+                    .listSectionSeparator(.hidden)
                 }
                 .listStyle(.plain)
                 .listRowSpacing(10)
-                .navigationBarTitle("Swift Football")
                 .safeAreaInset(edge: .top) {
                     Color.clear.frame(height: 10)
                 }
@@ -53,6 +55,17 @@ struct HomeView: View {
                 }
             }
         }
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarLeading) {
+                Image("NavBarIcon")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40, height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+        })
+        .navigationTitle("Swift Football")
+        .navigationBarTitleDisplayMode(.inline)
         .onChange(of: coordinator.isSheetPresented) { oldState, newState in
             if newState == false {
                 viewModel.loadState = .refetching
@@ -74,6 +87,26 @@ struct HomeView: View {
     func fetch() {
         Task {
             await viewModel.fetchSelectedLeagues()
+        }
+    }
+    
+    func showSheet() {
+        coordinator.isSheetPresented = true
+    }
+}
+
+struct HomeEmptyStateView: View {
+    var buttonAction: (() -> Void)
+    
+    var body: some View {
+        ContentUnavailableView {
+            Label("No Favourited Leagues", systemImage: "star.slash")
+        } description: {
+            Text("Favourited Leagues will be shown here")
+        } actions: {
+            Button("Add Leagues") {
+                buttonAction()
+            }
         }
     }
 }
