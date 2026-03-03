@@ -32,4 +32,15 @@ class HomeViewModel: BaseViewModel {
         }
         loadingFinished(isEmpty: leagues.count == 0)
     }
+    
+    func deleteSelected(index: Int) {
+        guard let league = leagues[safe: index] else {
+            return
+        }
+        leagues.remove(at: index)
+        league.isSelected = false
+        Task {
+            await dataProvider.save()
+        }
+    }
 }

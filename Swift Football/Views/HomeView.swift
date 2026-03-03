@@ -34,6 +34,7 @@ struct HomeView: View {
                             .listRowSeparator(.hidden)
                             .listRowBackground(Color.clear)
                         }
+                        .onDelete(perform: deleteLeague)
                     }
                     .sectionActions {
                         Button("", systemImage: "plus") {
@@ -41,7 +42,6 @@ struct HomeView: View {
                         }
                     }
                 }
-                
                 .listStyle(.plain)
                 .listRowSpacing(10)
                 .navigationBarTitle("Swift Football")
@@ -62,6 +62,13 @@ struct HomeView: View {
         .task {
             fetch()
         }
+    }
+    
+    func deleteLeague(indexSet: IndexSet) {
+        guard let index = indexSet.last else {
+            return
+        }
+        viewModel.deleteSelected(index: index)
     }
     
     func fetch() {
