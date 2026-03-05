@@ -9,10 +9,12 @@
 /* Begin PBXBuildFile section */
 		A33893BE2F29D6A30064C6EE /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A33893BD2F29D6A30064C6EE /* SDWebImageSwiftUI */; };
 		A33893C12F2A8A430064C6EE /* SDWebImageSVGCoder in Frameworks */ = {isa = PBXBuildFile; productRef = A33893C02F2A8A430064C6EE /* SDWebImageSVGCoder */; };
+		A360B7D92F59065B00ECB5AD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A360B7D82F59065B00ECB5AD /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A33893872F280BD70064C6EE /* Swift Football.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift Football.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A360B7D82F59065B00ECB5AD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,6 +41,7 @@
 		A338937E2F280BD70064C6EE = {
 			isa = PBXGroup;
 			children = (
+				A360B7D82F59065B00ECB5AD /* README.md */,
 				A33893892F280BD70064C6EE /* Swift Football */,
 				A33893882F280BD70064C6EE /* Products */,
 			);
@@ -122,6 +125,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A360B7D92F59065B00ECB5AD /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
