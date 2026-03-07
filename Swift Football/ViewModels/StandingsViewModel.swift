@@ -6,13 +6,18 @@
 //
 
 import Foundation
-internal import Combine
 import SwiftUI
 
 struct StandingsDescriptionLegend: Identifiable {
     var id = UUID()
-    let color: Color
-    let description: String?
+    var color: Color = .clear
+    let description: String
+    let tier: StandingsTier
+    
+    init(description: StandingDescription) {
+        self.description = description.description()
+        self.tier = description.getTier()
+    }
 }
 
 class StandingsViewModel: BaseViewModel {
@@ -100,28 +105,18 @@ class StandingsViewModel: BaseViewModel {
         guard let description else {
             return .clear
         }
-        switch description {
-        case .championsLeague, .copaLibertadores:
-            return .yellow
-        case .europaLeague:
-            return .blue
-        case .conferenceLeague:
-            return .cyan
-        case .relegation:
-            return .red
-        case .relegationPlayoff:
-            return .brown
-        case .promotion:
+        switch description.getTier() {
+        case .first:
             return .green
-        case .promotionPlayoffs:
-            return .mint
-        case .finals:
-            return .orange
-        case .nextRound:
-            return .teal
-        case .lowerTableRound:
-            return .indigo
-        case .other(_):
+        case .second:
+            return .blue
+        case .third:
+            return .cyan
+        case .secondBottom:
+            return .brown
+        case .bottom:
+            return .red
+        case .none:
             return .gray
         }
     }
@@ -132,29 +127,15 @@ class StandingsViewModel: BaseViewModel {
         }
         let filtered = flattened.compactMap { $0.description }
         let descriptionSet = Set(filtered)
-        let sorted = descriptionSet.sorted { standing1, standing2 in
-            switch (standing1, standing2) {
-            case (.finals, _): return true
-            case (_, .finals): return false
-            case (.championsLeague, _): return true
-            case (_, .championsLeague): return false
-            case (.europaLeague, _): return true
-            case (_, .europaLeague): return false
-            case (.conferenceLeague, _): return true
-            case (_, .conferenceLeague): return false
-            case (.promotion, _): return true
-            case (_, .promotion): return false
-            case (.promotionPlayoffs, _): return true
-            case (_, .promotionPlayoffs): return false
-            case (.relegationPlayoff, _): return true
-            case (_, .relegationPlayoff): return false
-                
-            default: return false
-            }
+        let legendArray: [StandingsDescriptionLegend] = descriptionSet.map {
+            var legend = StandingsDescriptionLegend(description: $0)
+            legend.color = colourForDescription($0)
+            return legend
+        }.sorted {
+            $0.tier.rawValue < $1.tier.rawValue
         }
-        return sorted.map { standing in
-            StandingsDescriptionLegend(color: colourForDescription(standing), description: standing.description())
-        }
+        
+        return legendArray
     }
     
     func fetchStandings(league: Int? = nil, season: Int? = nil, team: Int? = nil) async {

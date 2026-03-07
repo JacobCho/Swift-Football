@@ -6,7 +6,6 @@
 //
 
 import SwiftData
-internal import Combine
 import Foundation
 
 enum LoadState: Equatable {

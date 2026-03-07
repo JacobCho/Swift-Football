@@ -17,6 +17,8 @@ enum StandingDescription: Decodable, Equatable, Hashable {
     case promotion
     case promotionPlayoffs
     case finals
+    case finalSeries
+    case finalSeriesPlayoffs
     case nextRound
     case lowerTableRound
     case other(String)
@@ -44,6 +46,10 @@ enum StandingDescription: Decodable, Equatable, Hashable {
             self = .promotion
         } else if lowercased.contains("finals") {
             self = .finals
+        } else if lowercased.contains("final series play-offs") {
+            self = .finalSeriesPlayoffs
+        } else if lowercased.contains("final series") {
+            self = .finalSeries
         } else if lowercased.contains("next round") {
             self = .nextRound
         } else if lowercased.contains("lower table round") {
@@ -73,6 +79,10 @@ enum StandingDescription: Decodable, Equatable, Hashable {
             return "Promotion Playoffs"
         case .finals:
             return "Finals"
+        case .finalSeries:
+            return "Final Series"
+        case .finalSeriesPlayoffs:
+            return "Final Series Play-offs"
         case .nextRound:
             return "Next Round"
         case .lowerTableRound:
@@ -81,6 +91,32 @@ enum StandingDescription: Decodable, Equatable, Hashable {
             return "Other"
         }
     }
+    
+    func getTier() -> StandingsTier {
+        switch self {
+        case .championsLeague, .copaLibertadores, .promotion, .finals, .finalSeries, .nextRound:
+            return .first
+        case .europaLeague, .promotionPlayoffs, .finalSeriesPlayoffs, .lowerTableRound:
+            return .second
+        case .conferenceLeague:
+            return .third
+        case .relegation:
+            return .bottom
+        case .relegationPlayoff:
+            return .secondBottom
+        case .other:
+            return .none
+        }
+    }
+}
+
+enum StandingsTier: Int {
+    case first = 0
+    case second
+    case third
+    case secondBottom
+    case bottom
+    case none
 }
 
 struct Standing: Identifiable, Decodable, Hashable {

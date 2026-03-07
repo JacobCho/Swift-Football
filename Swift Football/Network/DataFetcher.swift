@@ -46,7 +46,7 @@ enum Endpoint: String {
         case .leagues:
             return "english-leagues"
         case .standings:
-            return "prem-2024-standings"
+            return "mls-2024-standings"
         }
     }
     
@@ -57,7 +57,7 @@ enum Endpoint: String {
         case .leagues:
             return false
         case .standings:
-            return false
+            return true
         }
     }
 }

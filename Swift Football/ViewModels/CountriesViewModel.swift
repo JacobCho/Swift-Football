@@ -6,7 +6,6 @@
 //
 
 import Foundation
-internal import Combine
 import SwiftData
 
 class CountriesViewModel: BaseViewModel {
