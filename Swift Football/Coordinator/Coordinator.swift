@@ -37,7 +37,7 @@ class Coordinator: ObservableObject {
     
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
-        self.swiftDataProvider = SwiftDataProvider(modelContext: modelContext)
+        self.swiftDataProvider = SwiftDataProvider(modelContainer: modelContext.container)
     }
     
     func pop() {

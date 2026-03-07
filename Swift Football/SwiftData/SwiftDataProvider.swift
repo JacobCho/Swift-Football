@@ -8,13 +8,8 @@
 import Foundation
 import SwiftData
 
+@ModelActor
 actor SwiftDataProvider {
-    var modelContext: ModelContext
-    
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-    }
-    
     func fetch<T: PersistentModel>(for type: T.Type,
                                    predicate: Predicate<T>? = nil,
                                    sortBy: [SortDescriptor<T>]? = nil) -> [T] {

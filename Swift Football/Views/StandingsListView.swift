@@ -103,7 +103,7 @@ struct StandingDescriptionLegendCell: View {
             legend.color
                 .clipShape(Circle())
                 .frame(width: 20, height: 20)
-            Text(legend.description ?? "")
+            Text(legend.description)
                 .font(.system(size: 11))
                 .lineLimit(1)
         }
