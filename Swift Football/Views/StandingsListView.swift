@@ -16,39 +16,38 @@ struct StandingsListView: View {
             if viewModel.loadState != .finished {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
-                if let standings: [Standing] = viewModel.flattenedStandings(), standings.count > 0 {
-                    VStack(spacing: -20) {
-                        List {
+                VStack(spacing: -20) {
+                    List {
+                        ForEach(viewModel.standings, id: \.self) { standings in
                             Section {
                                 ForEach(standings) { standing in
                                     StandingTeamCell(viewModel: viewModel, standing: standing)
                                 }
                             } header: {
-                                StandingsHeader()
-                            }
-                            
-                            Section {
-                                ForEach(viewModel.standingsDescriptionsLegend()) { legend in
-                                    StandingDescriptionLegendCell(legend: legend)
-                                }
+                                StandingsHeader(groupName: standings.first?.group ?? "",
+                                                shouldDisplayGroupName: viewModel.standings.count > 1)
                             }
                         }
-                        .font(.system(size: 11))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                        .listRowSpacing(-25)
-                        .listStyle(.insetGrouped)
-                        .navigationBarTitle(viewModel.navTitle())
-                        .navigationBarTitleDisplayMode(.inline)
-                        .safeAreaInset(edge: .top) {
-                            Color.clear.frame(height: 10)
+                        
+                        Section {
+                            ForEach(viewModel.standingsDescriptionsLegend()) { legend in
+                                StandingDescriptionLegendCell(legend: legend)
+                            }
                         }
                     }
-                } else {
-                    EmptyStateView()
+                    .font(.system(size: 11))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .listRowSpacing(-25)
+                    .listStyle(.insetGrouped)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .safeAreaInset(edge: .top) {
+                        Color.clear.frame(height: 10)
+                    }
                 }
             }
         }
+        .navigationBarTitle(viewModel.navTitle())
         .onAppear {
             fetch()
         }
@@ -63,12 +62,14 @@ struct StandingsListView: View {
 
 struct StandingsHeader: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    var groupName: String
+    var shouldDisplayGroupName: Bool = false
     
     var body: some View {
         HStack {
-            Text("Team")
+            Text(shouldDisplayGroupName ? groupName : "Team")
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 45)
+                .padding(.leading, shouldDisplayGroupName ? 0 : 45)
             HStack {
                 StandingsText(text: "PL")
                 StandingsText(text: "W")

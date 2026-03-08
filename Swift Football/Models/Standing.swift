@@ -148,4 +148,21 @@ struct Standing: Identifiable, Decodable, Hashable {
         case away
         case update
     }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.rank = try container.decode(Int.self, forKey: .rank)
+        self.id = rank
+        self.team = try container.decodeIfPresent(Team.self, forKey: .team)
+        self.points = try container.decodeIfPresent(Int.self, forKey: .points)
+        self.goalsDiff = try container.decodeIfPresent(Int.self, forKey: .goalsDiff)
+        self.group = try container.decodeIfPresent(String.self, forKey: .group)
+        self.form = try container.decodeIfPresent(String.self, forKey: .form)
+        self.status = try container.decodeIfPresent(String.self, forKey: .status)
+        self.description = try container.decodeIfPresent(StandingDescription.self, forKey: .description)
+        self.all = try container.decodeIfPresent(PlayedStat.self, forKey: .all)
+        self.home = try container.decodeIfPresent(PlayedStat.self, forKey: .home)
+        self.away = try container.decodeIfPresent(PlayedStat.self, forKey: .away)
+        self.update = try container.decodeIfPresent(String.self, forKey: .update)
+    }
 }

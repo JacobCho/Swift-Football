@@ -22,23 +22,12 @@ struct StandingsDescriptionLegend: Identifiable {
 
 class StandingsViewModel: BaseViewModel {
     var containers: [LeagueContainer] = []
+    var standings: [[Standing]] = []
+    var leagueDTO: LeagueDTO?
     private let standingsFetcher = StandingsFetcher()
     
-    func flattenedStandings() -> [Standing]? {
-        guard let container = containers.first, let league = container.league, var standings = league.standings?.first else {
-            return nil
-        }
-        standings = standings.map { standing in
-            var newStanding = standing
-            newStanding.id = standing.rank
-            return newStanding
-        }
-        
-        return standings
-    }
-    
     func navTitle() -> String {
-        guard let league = containers.first?.league else {
+        guard let league = leagueDTO else {
             return ""
         }
         var name = ""
@@ -122,10 +111,10 @@ class StandingsViewModel: BaseViewModel {
     }
     
     func standingsDescriptionsLegend() -> [StandingsDescriptionLegend] {
-        guard let flattened = flattenedStandings() else {
+        guard let firstStandings = standings.first else {
             return []
         }
-        let filtered = flattened.compactMap { $0.description }
+        let filtered = firstStandings.compactMap { $0.description }
         let descriptionSet = Set(filtered)
         let legendArray: [StandingsDescriptionLegend] = descriptionSet.map {
             var legend = StandingsDescriptionLegend(description: $0)
@@ -145,11 +134,13 @@ class StandingsViewModel: BaseViewModel {
         do {
             let response: StandingsResponse = try await standingsFetcher.fetchStandings(league: league, season: season, team: team)
             containers = response.containers
+            leagueDTO = response.containers.first?.league
+            standings = leagueDTO?.standings ?? []
         } catch {
             if let descError = error as? (any DescriptiveError) {
                 loadState = .error(descError.description)
             }
         }
-        loadingFinished(isEmpty: containers.count == 0)
+        loadingFinished(isEmpty: standings.count == 0)
     }
 }
