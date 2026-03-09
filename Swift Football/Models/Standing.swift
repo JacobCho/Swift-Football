@@ -21,6 +21,9 @@ enum StandingDescription: Decodable, Equatable, Hashable {
     case finalSeriesPlayoffs
     case nextRound
     case lowerTableRound
+    case afcElite
+    case afc2
+    case afcQualifiers
     case other(String)
     
     init(from decoder: Decoder) throws {
@@ -28,7 +31,13 @@ enum StandingDescription: Decodable, Equatable, Hashable {
         let rawValue = try container.decode(String.self)
         let lowercased = rawValue.lowercased()
         
-        if lowercased.contains("champions league") {
+        if lowercased.contains("afc champions elite qualifiers") {
+            self = .afcQualifiers
+        } else if lowercased.contains("afc champions league 2") {
+            self = .afc2
+        } else if lowercased.contains("afc champions league elite") {
+            self = .afcElite
+        } else if lowercased.contains("champions league") {
             self = .championsLeague
         } else if lowercased.contains("europa league") {
             self = .europaLeague
@@ -87,18 +96,24 @@ enum StandingDescription: Decodable, Equatable, Hashable {
             return "Next Round"
         case .lowerTableRound:
             return "Lower Table Round"
-        case .other:
-            return "Other"
+        case .afcElite:
+            return "AFC Champions League Elite"
+        case .afc2:
+            return "AFC Champions League 2"
+        case .afcQualifiers:
+            return "AFC Champions League Elite Qualifiers"
+        case .other(let string):
+            return string
         }
     }
     
     func getTier() -> StandingsTier {
         switch self {
-        case .championsLeague, .copaLibertadores, .promotion, .finals, .finalSeries, .nextRound:
+        case .championsLeague, .copaLibertadores, .promotion, .finals, .finalSeries, .nextRound, .afcElite:
             return .first
-        case .europaLeague, .promotionPlayoffs, .finalSeriesPlayoffs, .lowerTableRound:
+        case .europaLeague, .promotionPlayoffs, .finalSeriesPlayoffs, .lowerTableRound, .afc2:
             return .second
-        case .conferenceLeague:
+        case .conferenceLeague, .afcQualifiers:
             return .third
         case .relegation:
             return .bottom
@@ -120,7 +135,7 @@ enum StandingsTier: Int {
 }
 
 struct Standing: Identifiable, Decodable, Hashable {
-    var id: Int = 0
+    var id: String = ""
     let rank: Int
     let team: Team?
     let points: Int?
@@ -152,7 +167,6 @@ struct Standing: Identifiable, Decodable, Hashable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.rank = try container.decode(Int.self, forKey: .rank)
-        self.id = rank
         self.team = try container.decodeIfPresent(Team.self, forKey: .team)
         self.points = try container.decodeIfPresent(Int.self, forKey: .points)
         self.goalsDiff = try container.decodeIfPresent(Int.self, forKey: .goalsDiff)
@@ -164,5 +178,6 @@ struct Standing: Identifiable, Decodable, Hashable {
         self.home = try container.decodeIfPresent(PlayedStat.self, forKey: .home)
         self.away = try container.decodeIfPresent(PlayedStat.self, forKey: .away)
         self.update = try container.decodeIfPresent(String.self, forKey: .update)
+        self.id = "\(group ?? "nogroup")-\(team?.id ?? 0)-\(rank)"
     }
 }

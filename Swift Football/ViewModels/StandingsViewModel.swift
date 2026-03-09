@@ -111,12 +111,10 @@ class StandingsViewModel: BaseViewModel {
     }
     
     func standingsDescriptionsLegend() -> [StandingsDescriptionLegend] {
-        guard let firstStandings = standings.first else {
-            return []
-        }
-        let filtered = firstStandings.compactMap { $0.description }
-        let descriptionSet = Set(filtered)
-        let legendArray: [StandingsDescriptionLegend] = descriptionSet.map {
+        ///  Combine arrays of standings into one, filter out nils and duplicates, and map into StandingsDescriptionLegend types
+        let allStandings = standings.reduce([]) { $0 + $1 }
+        let filtered = Set(allStandings.compactMap { $0.description })
+        let legendArray: [StandingsDescriptionLegend] = filtered.map {
             var legend = StandingsDescriptionLegend(description: $0)
             legend.color = colourForDescription($0)
             return legend

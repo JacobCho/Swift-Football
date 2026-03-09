@@ -57,7 +57,7 @@ enum Endpoint: String {
         case .leagues:
             return false
         case .standings:
-            return true
+            return false
         }
     }
 }

@@ -18,7 +18,7 @@ struct StandingsListView: View {
             } else {
                 VStack(spacing: -20) {
                     List {
-                        ForEach(viewModel.standings, id: \.self) { standings in
+                        ForEach(Array(viewModel.standings.enumerated()), id: \.offset) { _, standings in
                             Section {
                                 ForEach(standings) { standing in
                                     StandingTeamCell(viewModel: viewModel, standing: standing)
@@ -120,30 +120,28 @@ struct StandingTeamCell: View {
     
     var body: some View {
         HStack {
-            if let team = standing.team {
-                viewModel.colourForDescription(standing.description)
-                    .frame(maxWidth: 3)
-                StandingsText(text: "\(standing.rank)")
-                AsyncImage(url: URL(string:team.logo ?? "")) { result in
-                    result.image?
-                        .resizable()
-                        .scaledToFit()
-                }
-                .frame(width: 20, height: 20)
-                Text(team.name ?? "")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                HStack {
-                    StandingsText(text: viewModel.standingPlayed(standing))
-                    StandingsText(text: viewModel.standingWins(standing))
-                    StandingsText(text: viewModel.standingDraws(standing))
-                    StandingsText(text: viewModel.standingLosses(standing))
-                    StandingsText(text: viewModel.standingGD(standing))
-                    StandingsText(text: viewModel.standingPoints(standing))
-                }
-                .multilineTextAlignment(.center)
-                .frame(alignment: .trailing)
-                .padding(.trailing, 8)
+            viewModel.colourForDescription(standing.description)
+                .frame(maxWidth: 3)
+            StandingsText(text: "\(standing.rank)")
+            AsyncImage(url: URL(string: standing.team?.logo ?? "")) { result in
+                result.image?
+                    .resizable()
+                    .scaledToFit()
             }
+            .frame(width: 20, height: 20)
+            Text(standing.team?.name ?? "")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                StandingsText(text: viewModel.standingPlayed(standing))
+                StandingsText(text: viewModel.standingWins(standing))
+                StandingsText(text: viewModel.standingDraws(standing))
+                StandingsText(text: viewModel.standingLosses(standing))
+                StandingsText(text: viewModel.standingGD(standing))
+                StandingsText(text: viewModel.standingPoints(standing))
+            }
+            .multilineTextAlignment(.center)
+            .frame(alignment: .trailing)
+            .padding(.trailing, 8)
         }
         .frame(height: 30)
         .minimumScaleFactor(0.8)
