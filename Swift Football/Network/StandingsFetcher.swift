@@ -6,28 +6,6 @@
 //
 
 import Foundation
-internal import Combine
-
-struct StandingsResponse: Decodable {
-    var containers: [LeagueContainer]
-    
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.containers = try container.decode([LeagueContainer].self, forKey: .containers)
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case containers = "response"
-    }
-}
-
-enum StandingsError: DescriptiveError {
-    case missingParameters
-    
-    var description: String {
-        return "Missing Parameters in standings call"
-    }
-}
 
 class StandingsFetcher: DataFetcher {
     
@@ -61,6 +39,15 @@ class StandingsFetcher: DataFetcher {
             let response: StandingsResponse = try await self.fetch(endPoint: .standings, parameters: parameters)
             return response
         }  catch {
+            throw error
+        }
+    }
+    
+    func fetchSeasons() async throws -> SeasonsResponse {
+        do {
+            let response: SeasonsResponse = try await self.fetch(endPoint: .seasons)
+            return response
+        } catch {
             throw error
         }
     }

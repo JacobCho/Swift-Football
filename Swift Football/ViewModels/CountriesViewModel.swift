@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@Observable
 class CountriesViewModel: BaseViewModel {
     var countries: [Country] = []
     private let countriesFetcher = CountriesFetcher()

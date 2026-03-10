@@ -20,9 +20,12 @@ struct StandingsDescriptionLegend: Identifiable {
     }
 }
 
+@Observable
 class StandingsViewModel: BaseViewModel {
     var containers: [LeagueContainer] = []
     var standings: [[Standing]] = []
+    var seasons: [String] = ["2024"]
+    var selectedSeason = "2024"
     var leagueDTO: LeagueDTO?
     private let standingsFetcher = StandingsFetcher()
     
@@ -125,20 +128,31 @@ class StandingsViewModel: BaseViewModel {
         return legendArray
     }
     
-    func fetchStandings(league: Int? = nil, season: Int? = nil, team: Int? = nil) async {
-        if loadState == .loading || loadState == .finished { return }
+    func fetchStandings(league: Int? = nil) async {
+        if loadState == .loading { return }
         loadState = .loading
         
         do {
-            let response: StandingsResponse = try await standingsFetcher.fetchStandings(league: league, season: season, team: team)
-            containers = response.containers
-            leagueDTO = response.containers.first?.league
-            standings = leagueDTO?.standings ?? []
+            let response: StandingsResponse = try await standingsFetcher.fetchStandings(league: league, season: Int(selectedSeason))
+            if let error = response.error, let plan = error.plan {
+                loadState = .error(plan)
+            } else {
+                containers = response.containers
+                leagueDTO = response.containers.first?.league
+                standings = leagueDTO?.standings ?? []
+            }
         } catch {
             if let descError = error as? (any DescriptiveError) {
                 loadState = .error(descError.description)
             }
         }
         loadingFinished(isEmpty: standings.count == 0)
+    }
+    
+    func fetchSeasons() async {
+        let response: SeasonsResponse? = try? await standingsFetcher.fetchSeasons()
+        if let fetchedSeasons = response?.seasons {
+            seasons = fetchedSeasons.map { "\($0)" }
+        }
     }
 }

@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct SeasonsResponse: Decodable {
+    var seasons: [Int]
+    
+    enum CodingKeys: String, CodingKey {
+        case seasons = "response"
+    }
+}

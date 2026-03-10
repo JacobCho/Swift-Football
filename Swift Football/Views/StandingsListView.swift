@@ -12,6 +12,14 @@ struct StandingsListView: View {
     let league: League
     
     var body: some View {
+        HStack {
+            Spacer()
+            PickerMenu(viewModel: viewModel, onChange: fetch)
+        }
+        .frame(maxWidth: .infinity, maxHeight: 35, alignment: .top)
+        if viewModel.loadState != .finished {
+            Spacer()
+        }
         VStack {
             if viewModel.loadState != .finished {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
@@ -49,13 +57,16 @@ struct StandingsListView: View {
         }
         .navigationBarTitle(viewModel.navTitle())
         .onAppear {
-            fetch()
+            Task {
+                await viewModel.fetchSeasons()
+                await viewModel.fetchStandings(league: league.id)
+            }
         }
     }
     
     func fetch() {
         Task {
-            await viewModel.fetchStandings(league: league.id, season: 2024)
+            await viewModel.fetchStandings(league: league.id)
         }
     }
 }
@@ -84,6 +95,32 @@ struct StandingsHeader: View {
         }
         .foregroundStyle(colorScheme == .light ? .black : .white)
         .font(.system(size: 11, weight: .semibold))
+    }
+}
+
+struct PickerMenu: View {
+    var viewModel: StandingsViewModel
+    var onChange: (() -> Void)
+    
+    var body: some View {
+        @Bindable var bindableViewModel = viewModel
+        Menu {
+            Picker(viewModel.selectedSeason, selection: $bindableViewModel.selectedSeason) {
+                ForEach(viewModel.seasons.enumerated(), id: \.element) { index, season in
+                    Text(season).tag(season)
+                }
+            }
+            .pickerStyle(.menu)
+        } label: {
+            Label("Current Season: \(viewModel.selectedSeason)", systemImage: "chevron.down")
+                .frame(maxHeight: 35)
+                .cornerRadius(8)
+        }
+        .compositingGroup()
+        .buttonStyle(.glass)
+        .onChange(of: viewModel.selectedSeason) { oldValue, newValue in
+            onChange()
+        }
     }
 }
 

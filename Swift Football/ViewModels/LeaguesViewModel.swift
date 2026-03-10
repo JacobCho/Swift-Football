@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@Observable
 class LeaguesViewModel: BaseViewModel {
     var leagues: [League] = []
     private let leaguesFetcher = LeaguesFetcher()
