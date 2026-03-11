@@ -14,6 +14,7 @@ enum Route: Identifiable, Hashable {
     case countries
     case leagues(country: Country)
     case standings(league: League)
+    case teamDetail(team: TeamDTO)
     
     var id: String {
         switch self {
@@ -25,6 +26,8 @@ enum Route: Identifiable, Hashable {
             return "leagues"
         case .standings(_):
             return "details"
+        case .teamDetail:
+            return "team"
         }
     }
 }
@@ -67,6 +70,8 @@ class Coordinator: ObservableObject {
             LeaguesListView(country: country, dataProvider: swiftDataProvider)
         case .standings(let league):
             StandingsListView(league: league)
+        case .teamDetail(let team):
+            TeamDetailView(team: team, dataProvider: swiftDataProvider)
         }
     }
 }

@@ -6,28 +6,6 @@
 //
 
 import Foundation
-internal import Combine
-
-struct LeaguesResponse: Decodable {
-    var leaguesDetails: [LeagueDetails]
-    
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.leaguesDetails = try container.decode([LeagueDetails].self, forKey: .leagues)
-        self.leaguesDetails = self.leaguesDetails.map { element in
-            var detail = element
-            if let id = element.league?.id {
-                detail.id = id
-            }
-            detail.league?.code = element.country?.code
-            return detail
-        }
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case leagues = "response"
-    }
-}
 
 class LeaguesFetcher: DataFetcher {
     
@@ -57,7 +35,7 @@ class LeaguesFetcher: DataFetcher {
             var parameters: [String: String] = [:]
             
             if let id {
-                parameters["id"] = String("\(id)")
+                parameters["id"] = "\(id)"
             }
             if let name {
                 parameters["name"] = name
@@ -68,11 +46,11 @@ class LeaguesFetcher: DataFetcher {
             if let code, code.count >= 2 && code.count <= 6 {
                 parameters["code"] = code
             }
-            if let season, String("\(season)").count == 4 {
-                parameters["season"] = String("\(season)")
+            if let season, "\(season)".count == 4 {
+                parameters["season"] = "\(season)"
             }
             if let team {
-                parameters["team"] = String("\(team)")
+                parameters["team"] = "\(team)"
             }
             if let type {
                 parameters["type"] = type.rawValue
@@ -84,7 +62,7 @@ class LeaguesFetcher: DataFetcher {
                 parameters["search"] = search
             }
             if let last {
-                parameters["last"] = String("\(last)")
+                parameters["last"] = "\(last)"
             }
             
             let response: LeaguesResponse = try await self.fetch(endPoint: .leagues, parameters: parameters)

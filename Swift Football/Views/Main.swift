@@ -18,7 +18,7 @@ struct Main: App {
     init() {
         SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
         do {
-            container = try ModelContainer(for: Schema([Country.self, League.self]), configurations: [])
+            container = try ModelContainer(for: Schema([Country.self, League.self, Team.self, Venue.self, TeamInfo.self]), configurations: [])
             let coordinator = Coordinator(modelContext: container.mainContext)
             _coordinator = StateObject(wrappedValue: coordinator)
         } catch {

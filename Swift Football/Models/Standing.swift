@@ -137,7 +137,7 @@ enum StandingsTier: Int {
 struct Standing: Identifiable, Decodable, Hashable {
     var id: String = ""
     let rank: Int
-    let team: Team?
+    let team: TeamDTO?
     let points: Int?
     let goalsDiff: Int?
     let group: String?
@@ -167,7 +167,7 @@ struct Standing: Identifiable, Decodable, Hashable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.rank = try container.decode(Int.self, forKey: .rank)
-        self.team = try container.decodeIfPresent(Team.self, forKey: .team)
+        self.team = try container.decodeIfPresent(TeamDTO.self, forKey: .team)
         self.points = try container.decodeIfPresent(Int.self, forKey: .points)
         self.goalsDiff = try container.decodeIfPresent(Int.self, forKey: .goalsDiff)
         self.group = try container.decodeIfPresent(String.self, forKey: .group)
