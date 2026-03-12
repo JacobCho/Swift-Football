@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct StandingsListView: View {
+    @EnvironmentObject var coordinator: Coordinator
     @State private var viewModel = StandingsViewModel()
     let league: League
     
     var body: some View {
         HStack {
             Spacer()
-            PickerMenu(viewModel: viewModel, onChange: fetch)
+            PickerMenu(viewModel: $viewModel, onChange: fetch)
         }
         .frame(maxWidth: .infinity, maxHeight: 35, alignment: .top)
         if viewModel.loadState != .finished {
@@ -29,7 +30,12 @@ struct StandingsListView: View {
                         ForEach(Array(viewModel.standings.enumerated()), id: \.offset) { _, standings in
                             Section {
                                 ForEach(standings) { standing in
-                                    StandingTeamCell(viewModel: viewModel, standing: standing)
+                                    ZStack {
+                                        NavigationLink("", value: standing.team)
+                                        StandingTeamCell(viewModel: viewModel, standing: standing)
+                                    }
+                                    .listRowSeparator(.hidden)
+                                    .listRowBackground(Color.clear)
                                 }
                             } header: {
                                 StandingsHeader(groupName: standings.first?.group ?? "",
@@ -51,6 +57,9 @@ struct StandingsListView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .safeAreaInset(edge: .top) {
                         Color.clear.frame(height: 10)
+                    }
+                    .navigationDestination(for: TeamDTO.self) { team in
+                        coordinator.view(for: .teamDetail(team: team))
                     }
                 }
             }
@@ -99,13 +108,12 @@ struct StandingsHeader: View {
 }
 
 struct PickerMenu: View {
-    var viewModel: StandingsViewModel
+    @Binding var viewModel: StandingsViewModel
     var onChange: (() -> Void)
     
     var body: some View {
-        @Bindable var bindableViewModel = viewModel
         Menu {
-            Picker(viewModel.selectedSeason, selection: $bindableViewModel.selectedSeason) {
+            Picker(viewModel.selectedSeason, selection: $viewModel.selectedSeason) {
                 ForEach(viewModel.seasons.enumerated(), id: \.element) { index, season in
                     Text(season).tag(season)
                 }

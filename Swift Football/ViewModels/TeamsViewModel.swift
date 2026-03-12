@@ -10,12 +10,29 @@ import SwiftData
 
 @Observable
 class TeamsViewModel: BaseViewModel {
-    var team: TeamInfo?
+    var teamInfo: TeamInfo?
     private let teamsFetcher = TeamsFetcher()
     private let dataProvider: SwiftDataProvider
     
     init(dataProvider: SwiftDataProvider) {
         self.dataProvider = dataProvider
+    }
+    
+    func teamName() -> String {
+        guard let info = teamInfo, let teamName = info.team.name else {
+            return ""
+        }
+        
+        return teamName
+    }
+    
+    func subtitle() -> String {
+        guard let info = teamInfo, let country = info.team.country, let founded = info.team.founded else {
+            return ""
+        }
+        let year = "\(founded)".replacing(",", with: "")
+        
+        return "\(country) · Founded: \(year)"
     }
     
     func fetchTeamForDetail(id: Int? = nil) async {
@@ -26,13 +43,13 @@ class TeamsViewModel: BaseViewModel {
         
         let savedTeams = await dataProvider.fetch(for: TeamInfo.self, sortBy: sort)
         if savedTeams.count > 0 {
-            team = savedTeams.first
+            teamInfo = savedTeams.first
         } else {
             do {
                 let response: TeamsResponse = try await teamsFetcher.fetchTeams(id: id)
-                team = response.teams.map { TeamInfo(dto: $0) }.first
-                if let team {
-                    await dataProvider.saveData([team])
+                teamInfo = response.teams.map { TeamInfo(dto: $0) }.first
+                if let teamInfo {
+                    await dataProvider.saveData([teamInfo])
                 }
             } catch {
                 if let descError = error as? DescriptiveError  {
@@ -40,6 +57,6 @@ class TeamsViewModel: BaseViewModel {
                 }
             }
         }
-        loadingFinished(isEmpty: team == nil)
+        loadingFinished(isEmpty: teamInfo == nil)
     }
 }
