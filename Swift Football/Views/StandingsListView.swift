@@ -49,19 +49,22 @@ struct StandingsListView: View {
                             }
                         }
                     }
+                    .scrollContentBackground(.hidden)
                     .font(.system(size: 11))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .listRowSpacing(-25)
                     .listStyle(.insetGrouped)
+                    .navigationLinkIndicatorVisibility(.hidden)
                     .navigationBarTitleDisplayMode(.inline)
                     .safeAreaInset(edge: .top) {
                         Color.clear.frame(height: 10)
                     }
                     .navigationDestination(for: TeamDTO.self) { team in
-                        coordinator.view(for: .teamDetail(team: team))
+                        coordinator.view(for: .teamDetail(team: team, selectedSeason: Int(viewModel.selectedSeason) ?? 2024))
                     }
                 }
+                
             }
         }
         .navigationBarTitle(viewModel.navTitle())

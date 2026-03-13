@@ -11,11 +11,15 @@ import SwiftData
 @Observable
 class TeamsViewModel: BaseViewModel {
     var teamInfo: TeamInfo?
+    var leagues: [LeagueDetails] = []
     private let teamsFetcher = TeamsFetcher()
+    private let leaguesFetcher = LeaguesFetcher()
     private let dataProvider: SwiftDataProvider
+    private var selectedSeason: Int
     
-    init(dataProvider: SwiftDataProvider) {
+    init(dataProvider: SwiftDataProvider, selectedSeason: Int) {
         self.dataProvider = dataProvider
+        self.selectedSeason = selectedSeason
     }
     
     func teamName() -> String {
@@ -58,5 +62,16 @@ class TeamsViewModel: BaseViewModel {
             }
         }
         loadingFinished(isEmpty: teamInfo == nil)
+    }
+    
+    func fetchInvolvedLeagues(team: Int, season: Int) async {
+        do {
+            let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: season, team: team)
+            leagues = response.leaguesDetails
+        } catch {
+            if let descError = error as? DescriptiveError  {
+                loadState = .error(descError.description)
+            }
+        }
     }
 }

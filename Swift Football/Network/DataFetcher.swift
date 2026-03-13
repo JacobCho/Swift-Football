@@ -41,11 +41,14 @@ enum Endpoint: String {
     case seasons = "leagues/seasons"
     case teams
     
-    func jsonFilename() -> String {
+    func jsonFilename(with parameters: [String: String]? = nil) -> String {
         switch self {
         case .countries:
             return "countries"
         case .leagues:
+            if let parameters, parameters.keys.contains("team") {
+                return "man-utd-2024-leagues"
+            }
             return "english-leagues"
         case .standings:
             return "mls-2024-standings"
@@ -78,7 +81,7 @@ class DataFetcher {
     
     func fetch<T: Decodable>(endPoint: Endpoint, parameters: [String: String]? = nil) async throws -> T {
         if endPoint.shouldUseMock() {
-            return try fetchTestFiles(endPoint: endPoint)
+            return try fetchTestFiles(endPoint: endPoint, parameters: parameters)
         }
         
         let urlString = "https://v3.football.api-sports.io/\(endPoint.rawValue)?"
@@ -116,8 +119,8 @@ class DataFetcher {
         }
     }
     
-    func fetchTestFiles<T: Decodable>(endPoint: Endpoint) throws -> T {
-        guard let url = Bundle.main.url(forResource: endPoint.jsonFilename(), withExtension: "json") else {
+    func fetchTestFiles<T: Decodable>(endPoint: Endpoint, parameters: [String: String]? = nil) throws -> T {
+        guard let url = Bundle.main.url(forResource: endPoint.jsonFilename(with: parameters), withExtension: "json") else {
             throw NetworkError.testFileError
         }
         

@@ -1,0 +1,274 @@
+{
+    "get": "leagues",
+    "parameters": {
+        "season": "2024",
+        "team": "33"
+    },
+    "errors": [],
+    "results": 7,
+    "paging": {
+        "current": 1,
+        "total": 1
+    },
+    "response": [
+        {
+            "league": {
+                "id": 667,
+                "name": "Friendlies Clubs",
+                "type": "Cup",
+                "logo": "https://media.api-sports.io/football/leagues/667.png"
+            },
+            "country": {
+                "name": "World",
+                "code": null,
+                "flag": null
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2024-01-04",
+                    "end": "2024-12-30",
+                    "current": false,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": true,
+                            "statistics_players": true
+                        },
+                        "standings": false,
+                        "players": true,
+                        "top_scorers": true,
+                        "top_assists": true,
+                        "top_cards": true,
+                        "injuries": false,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        },
+        {
+            "league": {
+                "id": 39,
+                "name": "Premier League",
+                "type": "League",
+                "logo": "https://media.api-sports.io/football/leagues/39.png"
+            },
+            "country": {
+                "name": "England",
+                "code": "GB-ENG",
+                "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2024-08-16",
+                    "end": "2025-05-25",
+                    "current": false,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": true,
+                            "statistics_players": true
+                        },
+                        "standings": true,
+                        "players": true,
+                        "top_scorers": true,
+                        "top_assists": true,
+                        "top_cards": true,
+                        "injuries": true,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        },
+        {
+            "league": {
+                "id": 3,
+                "name": "UEFA Europa League",
+                "type": "Cup",
+                "logo": "https://media.api-sports.io/football/leagues/3.png"
+            },
+            "country": {
+                "name": "World",
+                "code": null,
+                "flag": null
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2024-07-11",
+                    "end": "2025-05-21",
+                    "current": false,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": true,
+                            "statistics_players": true
+                        },
+                        "standings": true,
+                        "players": true,
+                        "top_scorers": true,
+                        "top_assists": true,
+                        "top_cards": true,
+                        "injuries": true,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        },
+        {
+            "league": {
+                "id": 48,
+                "name": "League Cup",
+                "type": "Cup",
+                "logo": "https://media.api-sports.io/football/leagues/48.png"
+            },
+            "country": {
+                "name": "England",
+                "code": "GB-ENG",
+                "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2024-08-13",
+                    "end": "2025-03-16",
+                    "current": false,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": true,
+                            "statistics_players": true
+                        },
+                        "standings": false,
+                        "players": true,
+                        "top_scorers": true,
+                        "top_assists": true,
+                        "top_cards": true,
+                        "injuries": false,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        },
+        {
+            "league": {
+                "id": 528,
+                "name": "Community Shield",
+                "type": "Cup",
+                "logo": "https://media.api-sports.io/football/leagues/528.png"
+            },
+            "country": {
+                "name": "England",
+                "code": "GB-ENG",
+                "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2024-08-10",
+                    "end": "2024-08-10",
+                    "current": false,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": true,
+                            "statistics_players": true
+                        },
+                        "standings": false,
+                        "players": true,
+                        "top_scorers": true,
+                        "top_assists": true,
+                        "top_cards": true,
+                        "injuries": false,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        },
+        {
+            "league": {
+                "id": 45,
+                "name": "FA Cup",
+                "type": "Cup",
+                "logo": "https://media.api-sports.io/football/leagues/45.png"
+            },
+            "country": {
+                "name": "England",
+                "code": "GB-ENG",
+                "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2024-08-02",
+                    "end": "2025-05-16",
+                    "current": false,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": true,
+                            "statistics_players": true
+                        },
+                        "standings": false,
+                        "players": true,
+                        "top_scorers": true,
+                        "top_assists": true,
+                        "top_cards": true,
+                        "injuries": false,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        },
+        {
+            "league": {
+                "id": 1022,
+                "name": "Premier League - Summer Series",
+                "type": "League",
+                "logo": "https://media.api-sports.io/football/leagues/1022.png"
+            },
+            "country": {
+                "name": "England",
+                "code": "GB-ENG",
+                "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+            },
+            "seasons": [
+                {
+                    "year": 2024,
+                    "start": "2025-07-26",
+                    "end": "2025-08-03",
+                    "current": true,
+                    "coverage": {
+                        "fixtures": {
+                            "events": true,
+                            "lineups": true,
+                            "statistics_fixtures": false,
+                            "statistics_players": false
+                        },
+                        "standings": false,
+                        "players": false,
+                        "top_scorers": false,
+                        "top_assists": false,
+                        "top_cards": false,
+                        "injuries": false,
+                        "predictions": true,
+                        "odds": false
+                    }
+                }
+            ]
+        }
+    ]
+}
