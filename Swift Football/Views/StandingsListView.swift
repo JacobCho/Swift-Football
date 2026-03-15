@@ -61,7 +61,7 @@ struct StandingsListView: View {
                         Color.clear.frame(height: 10)
                     }
                     .navigationDestination(for: TeamDTO.self) { team in
-                        coordinator.view(for: .teamDetail(team: team, selectedSeason: Int(viewModel.selectedSeason) ?? 2024))
+                        coordinator.view(for: .teamDetail(id: team.id, selectedSeason: Int(viewModel.selectedSeason) ?? 2024))
                     }
                 }
                 

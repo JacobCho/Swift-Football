@@ -27,7 +27,6 @@ class Team: LogoListable {
     var country: String?
     var founded: Int?
     var national: Bool?
-    var isSelected: Bool
     
     init(dto: TeamDTO) {
         self.id = dto.id
@@ -37,6 +36,5 @@ class Team: LogoListable {
         self.country = dto.country
         self.founded = dto.founded
         self.national = dto.national
-        self.isSelected = false
     }
 }

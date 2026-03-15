@@ -14,7 +14,7 @@ enum Route: Identifiable, Hashable {
     case countries
     case leagues(country: Country)
     case standings(league: League)
-    case teamDetail(team: TeamDTO, selectedSeason: Int)
+    case teamDetail(id: Int, selectedSeason: Int)
     
     var id: String {
         switch self {
@@ -37,6 +37,7 @@ class Coordinator: ObservableObject {
     @Published var isSheetPresented = false
     private var modelContext: ModelContext
     private var swiftDataProvider: SwiftDataProvider
+    var leagueSelectable = true
     
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -70,8 +71,8 @@ class Coordinator: ObservableObject {
             LeaguesListView(country: country, dataProvider: swiftDataProvider)
         case .standings(let league):
             StandingsListView(league: league)
-        case .teamDetail(let team, let season):
-            TeamDetailView(team: team, season: season, dataProvider: swiftDataProvider)
+        case .teamDetail(let id, let season):
+            TeamDetailView(teamId: id, season: season, dataProvider: swiftDataProvider)
         }
     }
 }

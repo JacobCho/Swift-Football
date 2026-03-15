@@ -28,12 +28,12 @@ enum TeamDetailInfo: Int {
 struct TeamDetailView: View {
     @State private var viewModel: TeamsViewModel
     @State private var detailInfoViews = [TeamDetailInfo.overview, TeamDetailInfo.players, TeamDetailInfo.statistics]
-    let teamDTO: TeamDTO
+    let teamId: Int
     @State private var selectedSeason: Int
     @State private var scrollPosition: ScrollPosition = ScrollPosition(idType: TeamDetailInfo.RawValue.self, edge: .leading)
     
-    init(team: TeamDTO, season: Int, dataProvider: SwiftDataProvider) {
-        self.teamDTO = team
+    init(teamId: Int, season: Int, dataProvider: SwiftDataProvider) {
+        self.teamId = teamId
         _selectedSeason = State(initialValue: season)
         let viewModel = TeamsViewModel(dataProvider: dataProvider, selectedSeason: season)
         _viewModel = State(initialValue: viewModel)
@@ -77,7 +77,7 @@ struct TeamDetailView: View {
     
     func fetch() {
         Task {
-            await viewModel.fetchTeamForDetail(id: teamDTO.id)
+            await viewModel.fetchTeamForDetail(id: teamId)
         }
     }
 }

@@ -17,9 +17,11 @@ struct TeamInfoDTO: Decodable {
 class TeamInfo {
     var team: Team
     var venue: Venue
+    var isSelected: Bool
     
     init(dto: TeamInfoDTO) {
         self.team = Team(dto: dto.team)
         self.venue = Venue(dto: dto.venue)
+        self.isSelected = false
     }
 }

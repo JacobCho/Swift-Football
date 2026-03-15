@@ -25,29 +25,42 @@ struct LeaguesListView: View {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
                 List(viewModel.leagues) { league in
-                    Button(action: {
-                        toggleLeagueSelection(league: league)
-                    }) {
-                        LogoListRow(listable: league)
-                            .frame(maxHeight: 30)
+                    if coordinator.leagueSelectable {
+                        Button(action: {
+                            toggleLeagueSelection(league: league)
+                        }) {
+                            LogoListRow(listable: league)
+                                .frame(maxHeight: 30)
+                        }
+                        .buttonStyle(.plain)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                    } else {
+                        ZStack {
+                            NavigationLink("", value: league)
+                            LogoListRow(listable: league)
+                                .frame(maxHeight: 30)
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
-                    .buttonStyle(.plain)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
                 }
-                
                 .listStyle(.plain)
                 .listRowSpacing(10)
                 .navigationBarTitle("Leagues")
                 .safeAreaInset(edge: .top) {
                     Color.clear.frame(height: 10)
                 }
+                .navigationDestination(for: League.self) { league in
+                    coordinator.view(for: .standings(league: league))
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         CloseButton()
                             .environmentObject(coordinator)
                     }
-                }            }
+                }
+            }
         }
         .task {
             fetch()

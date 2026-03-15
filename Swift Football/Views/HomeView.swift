@@ -18,30 +18,20 @@ struct HomeView: View {
     }
     
     var body: some View {
+        let _ = Self._printChanges()
         VStack {
-            if viewModel.loadState == .empty {
-                HomeEmptyStateView(buttonAction: showSheet)
-            } else if viewModel.loadState != .finished && viewModel.loadState != .refetching {
+            switch viewModel.loadState {
+            case .loading, .error:
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
-            } else {
+            default:
+                if viewModel.loadState == .empty {
+                    Text("Favourited Leagues and Teams will be shown here")
+                        .font(.system(size: 16, weight: .semibold))
+                        .padding(.top, 16)
+                }
                 List {
-                    Section("Favourite Leagues") {
-                        ForEach(viewModel.leagues) { league in
-                            ZStack {
-                                NavigationLink("", value: league)
-                                LogoListRow(listable: league, showSelectable: false)
-                                    .frame(maxHeight: 30)
-                            }
-                            .buttonStyle(.plain)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
-                        }
-                        .onDelete(perform: deleteLeague)
-                    }
-                    .sectionActions {
-                        Button("", systemImage: "plus.app") {
-                            showSheet()
-                        }
+                    ForEach(viewModel.sections, id: \.self) { section in
+                        HomeFavouritesSection(viewModel: viewModel, section: section)
                     }
                     .listSectionSeparator(.hidden)
                 }
@@ -52,6 +42,9 @@ struct HomeView: View {
                 }
                 .navigationDestination(for: League.self) { league in
                     coordinator.view(for: .standings(league: league))
+                }
+                .navigationDestination(for: TeamInfo.self) { teamInfo in
+                    coordinator.view(for: .teamDetail(id: teamInfo.team.id, selectedSeason: 2024))
                 }
             }
         }
@@ -66,47 +59,61 @@ struct HomeView: View {
         })
         .navigationTitle("Swift Football")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: coordinator.isSheetPresented) { oldState, newState in
-            if newState == false {
-                viewModel.loadState = .refetching
-                fetch()
-            }
-        }
         .task {
             fetch()
         }
     }
     
-    func deleteLeague(indexSet: IndexSet) {
+    func fetch() {
+        viewModel.fetchSelected()
+    }
+    
+    
+}
+
+struct HomeFavouritesSection: View {
+    @EnvironmentObject var coordinator: Coordinator
+    var viewModel: HomeViewModel
+    var section: HomeSection
+    
+    init(viewModel: HomeViewModel, section: HomeSection) {
+        self.viewModel = viewModel
+        self.section = section
+    }
+    
+    var body: some View {
+        Section(section.sectionTitle()) {
+            ForEach(viewModel.getItems(for: section), id: \.persistentModelID) { item in
+                ZStack {
+                    NavigationLink("", value: item)
+                    if let logoListable = viewModel.getLogoListableItem(for: section, item: item) {
+                        LogoListRow(listable: logoListable, showSelectable: false)
+                            .frame(maxHeight: 30)
+                    }
+                }
+                .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+            }
+            .onDelete(perform: deleteItem)
+        }
+        .sectionActions {
+            Button("", systemImage: "plus.app") {
+                showSheet(section: section)
+            }
+        }
+    }
+    
+    func deleteItem(indexSet: IndexSet) {
         guard let index = indexSet.last else {
             return
         }
-        viewModel.deleteSelected(index: index)
+        
+        viewModel.deleteSelected(in: section, index: index)
     }
     
-    func fetch() {
-        Task {
-            await viewModel.fetchSelectedLeagues()
-        }
-    }
-    
-    func showSheet() {
+    func showSheet(section: HomeSection) {
+        coordinator.leagueSelectable = section == .leagues
         coordinator.isSheetPresented = true
-    }
-}
-
-struct HomeEmptyStateView: View {
-    var buttonAction: (() -> Void)
-    
-    var body: some View {
-        ContentUnavailableView {
-            Label("No Favourited Leagues", systemImage: "star.slash")
-        } description: {
-            Text("Favourited Leagues will be shown here")
-        } actions: {
-            Button("Add Leagues") {
-                buttonAction()
-            }
-        }
     }
 }
