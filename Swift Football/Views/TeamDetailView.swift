@@ -70,6 +70,11 @@ struct TeamDetailView: View {
                 .padding(.top, 16)
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                FavouriteButton(viewModel: viewModel)
+            }
+        }
         .task {
             fetch()
         }
@@ -78,6 +83,23 @@ struct TeamDetailView: View {
     func fetch() {
         Task {
             await viewModel.fetchTeamForDetail(id: teamId)
+        }
+    }
+}
+
+struct FavouriteButton: View {
+    let viewModel: TeamsViewModel
+    
+    var body: some View {
+        Button {
+            viewModel.saveTeamAsFavourite()
+        } label: {
+            
+            Image(systemName: viewModel.isTeamFavourited() ? "star.fill" : "star")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.secondary)
+                .frame(width: 30, height: 30)
+                .clipShape(Circle())
         }
     }
 }
