@@ -12,7 +12,7 @@ internal import Combine
 enum Route: Identifiable, Hashable {
     case home
     case countries
-    case leagues(country: Country)
+    case leagues(countryCode: String)
     case standings(league: League)
     case teamDetail(id: Int, selectedSeason: Int)
     
@@ -67,8 +67,8 @@ class Coordinator: ObservableObject {
             HomeView(dataProvider: swiftDataProvider)
         case .countries:
             CountriesListView(dataProvider: swiftDataProvider)
-        case .leagues(let country):
-            LeaguesListView(country: country, dataProvider: swiftDataProvider)
+        case .leagues(let countryCode):
+            LeaguesListView(countryCode: countryCode, dataProvider: swiftDataProvider)
         case .standings(let league):
             StandingsListView(league: league)
         case .teamDetail(let id, let season):

@@ -10,7 +10,6 @@ import SwiftData
 
 @Observable
 class LeaguesViewModel: BaseViewModel {
-    var leagues: [League] = []
     private let leaguesFetcher = LeaguesFetcher()
     private let dataProvider: SwiftDataProvider
     
@@ -18,15 +17,18 @@ class LeaguesViewModel: BaseViewModel {
         self.dataProvider = dataProvider
     }
     
+    func predicate(code: String) -> Predicate<League> {
+        return #Predicate<League> { league in
+            league.code == code
+        }
+    }
+    
     func fetchLeagues(code: String) async {
         if loadState == .loading || loadState == .finished { return }
         loadState = .loading
         
-        let predicate = #Predicate<League> { league in
-            league.code == code
-        }
-        
-        let savedLeagues = await dataProvider.fetch(for: League.self, predicate: predicate)
+        var leagues: [League] = []
+        let savedLeagues = await dataProvider.fetch(for: League.self, predicate: predicate(code: code))
         
         if savedLeagues.count > 0 {
             leagues = savedLeagues

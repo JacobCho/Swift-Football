@@ -11,12 +11,15 @@ import SwiftData
 struct LeaguesListView: View {
     @EnvironmentObject var coordinator: Coordinator
     @State private var viewModel: LeaguesViewModel
-    let country: Country
+    @Query var leagues: [League]
+    let countryCode: String
     
-    init(country: Country, dataProvider: SwiftDataProvider) {
-        self.country = country
+    init(countryCode: String, dataProvider: SwiftDataProvider) {
+        self.countryCode = countryCode
         let viewModel = LeaguesViewModel(dataProvider: dataProvider)
         _viewModel = State(initialValue: viewModel)
+
+        _leagues = Query(filter: viewModel.predicate(code: countryCode), sort: [SortDescriptor(\League.name, order: .forward)])
     }
     
     var body: some View {
@@ -24,7 +27,7 @@ struct LeaguesListView: View {
             if viewModel.loadState != .finished {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
-                List(viewModel.leagues) { league in
+                List(leagues) { league in
                     if coordinator.leagueSelectable {
                         Button(action: {
                             toggleLeagueSelection(league: league)
@@ -73,7 +76,7 @@ struct LeaguesListView: View {
     
     func fetch() {
         Task {
-            await viewModel.fetchLeagues(code: country.code ?? "")
+            await viewModel.fetchLeagues(code: countryCode)
         }
     }
 }

@@ -14,7 +14,7 @@ struct TeamInfoDTO: Decodable {
 }
 
 @Model
-class TeamInfo {
+class TeamInfo: Selectable {
     var team: Team
     var venue: Venue
     var isSelected: Bool

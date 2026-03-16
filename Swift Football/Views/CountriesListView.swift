@@ -12,6 +12,7 @@ struct CountriesListView: View {
     @EnvironmentObject var coordinator: Coordinator
     @State private var viewModel: CountriesViewModel
     @State private var searchText = ""
+    @Query(sort: [SortDescriptor(\Country.name, order: .forward)]) private var countries: [Country]
     
     init(dataProvider: SwiftDataProvider) {
         let viewModel = CountriesViewModel(dataProvider: dataProvider)
@@ -20,9 +21,9 @@ struct CountriesListView: View {
     
     var filtered: [Country] {
         if searchText.isEmpty {
-            return viewModel.countries
+            return countries
         } else {
-            return viewModel.countries.filter {
+            return countries.filter {
                 if let name = $0.name {
                     return name.localizedCaseInsensitiveContains(searchText)
                 }
@@ -36,13 +37,12 @@ struct CountriesListView: View {
             if viewModel.loadState != .finished {
                 LoadStateView(loadState: viewModel.loadState, buttonAction: fetch)
             } else {
-                if filtered.count == 0 {
+                if countries.count == 0 {
                     EmptyStateView()
                 } else {
                     List(filtered) { country in
                         ZStack {
                             NavigationLink("", value: country)
-                            
                             LogoListRow(listable: country)
                         }
                         .listRowSeparator(.hidden)
@@ -61,7 +61,9 @@ struct CountriesListView: View {
                         }
                     }
                     .navigationDestination(for: Country.self) { country in
-                        coordinator.view(for: .leagues(country: country))
+                        if let code = country.code {
+                            coordinator.view(for: .leagues(countryCode: code))
+                        }
                     }
                 }
             }

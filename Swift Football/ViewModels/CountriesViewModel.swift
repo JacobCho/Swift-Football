@@ -10,7 +10,7 @@ import SwiftData
 
 @Observable
 class CountriesViewModel: BaseViewModel {
-    var countries: [Country] = []
+    
     private let countriesFetcher = CountriesFetcher()
     private let dataProvider: SwiftDataProvider
     
@@ -21,10 +21,9 @@ class CountriesViewModel: BaseViewModel {
     func fetchCountries(name: String? = nil, code: String? = nil, search: String? = nil) async {
         if loadState == .loading || loadState == .finished { return }
         loadState = .loading
+        var countries: [Country] = []
         
-        let sort: [SortDescriptor<Country>] = [SortDescriptor(\.name, order: .forward)]
-        
-        let savedCountries = await dataProvider.fetch(for: Country.self, sortBy: sort)
+        let savedCountries = await dataProvider.fetch(for: Country.self)
         if savedCountries.count > 0 {
             countries = savedCountries
         } else {

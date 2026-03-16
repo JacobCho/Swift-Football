@@ -48,6 +48,8 @@ class TeamsViewModel: BaseViewModel {
         let savedTeams = await dataProvider.fetch(for: TeamInfo.self, sortBy: sort)
         if savedTeams.count > 0 {
             teamInfo = savedTeams.first
+            teamInfo?.isSelected.toggle()
+            await dataProvider.save()
         } else {
             do {
                 let response: TeamsResponse = try await teamsFetcher.fetchTeams(id: id)
