@@ -12,7 +12,7 @@ import SDWebImageSVGCoder
 
 @main
 struct Main: App {
-    @StateObject var coordinator: Coordinator
+    @State var coordinator: Coordinator
     var container: ModelContainer
     
     init() {
@@ -20,7 +20,7 @@ struct Main: App {
         do {
             container = try ModelContainer(for: Schema([Country.self, League.self, Team.self, Venue.self, TeamInfo.self]), configurations: [])
             let coordinator = Coordinator(modelContext: container.mainContext)
-            _coordinator = StateObject(wrappedValue: coordinator)
+            _coordinator = State(initialValue: coordinator)
         } catch {
             fatalError("Failed to create ModelContainer")
         }
@@ -36,7 +36,7 @@ struct Main: App {
                     coordinator.view(for: .countries)
                 }
             }
-            .environmentObject(coordinator)
+            .environment(coordinator)
             .modelContainer(container)
         }
     }

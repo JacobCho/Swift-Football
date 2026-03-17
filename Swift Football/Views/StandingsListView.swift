@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StandingsListView: View {
-    @EnvironmentObject var coordinator: Coordinator
+    @Environment(Coordinator.self) var coordinator: Coordinator
     @State private var viewModel = StandingsViewModel()
     let league: League
     

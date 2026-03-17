@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct CountriesListView: View {
-    @EnvironmentObject var coordinator: Coordinator
+    @Environment(Coordinator.self) var coordinator: Coordinator
     @State private var viewModel: CountriesViewModel
     @State private var searchText = ""
     @Query(sort: [SortDescriptor(\Country.name, order: .forward)]) private var countries: [Country]
@@ -57,7 +57,7 @@ struct CountriesListView: View {
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             CloseButton()
-                                .environmentObject(coordinator)
+                                .environment(coordinator)
                         }
                     }
                     .navigationDestination(for: Country.self) { country in

@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @EnvironmentObject var coordinator: Coordinator
+    @Environment(Coordinator.self) var coordinator: Coordinator
     @State private var viewModel: HomeViewModel
     
     init(dataProvider: SwiftDataProvider) {
@@ -62,7 +62,7 @@ struct HomeView: View {
 }
 
 struct HomeFavouriteLeaguesSection: View {
-    @EnvironmentObject var coordinator: Coordinator
+    @Environment(Coordinator.self) var coordinator: Coordinator
     var viewModel: HomeViewModel
     var section: HomeSection
     @Query(filter: #Predicate<League> { $0.isSelected }) var leagues: [League]

@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct LeaguesListView: View {
-    @EnvironmentObject var coordinator: Coordinator
+    @Environment(Coordinator.self) var coordinator: Coordinator
     @State private var viewModel: LeaguesViewModel
     @Query var leagues: [League]
     let countryCode: String
@@ -60,7 +60,7 @@ struct LeaguesListView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         CloseButton()
-                            .environmentObject(coordinator)
+                            .environment(coordinator)
                     }
                 }
             }

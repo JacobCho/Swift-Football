@@ -32,9 +32,10 @@ enum Route: Identifiable, Hashable {
     }
 }
 
-class Coordinator: ObservableObject {
-    @Published var path = NavigationPath()
-    @Published var isSheetPresented = false
+@Observable
+class Coordinator {
+    var path = NavigationPath()
+    var isSheetPresented = false
     private var modelContext: ModelContext
     private var swiftDataProvider: SwiftDataProvider
     var leagueSelectable = true

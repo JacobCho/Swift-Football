@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CloseButton: View {
-    @EnvironmentObject var coordinator: Coordinator
+    @Environment(Coordinator.self) var coordinator: Coordinator
     
     var body: some View {
         Button {
