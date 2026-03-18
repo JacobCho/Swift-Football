@@ -39,13 +39,14 @@ class TeamsViewModel: BaseViewModel {
         return "\(country) · Founded: \(year)"
     }
     
-    func fetchTeamForDetail(id: Int? = nil) async {
+    func fetchTeamForDetail(id: Int) async {
         if loadState == .loading { return }
         loadState = .loading
         
+        let predicate = #Predicate<TeamInfo> { $0.team.id == id }
         let sort: [SortDescriptor<TeamInfo>] = [SortDescriptor(\.id, order: .forward)]
         
-        let savedTeams = await dataProvider.fetch(for: TeamInfo.self, sortBy: sort)
+        let savedTeams = await dataProvider.fetch(for: TeamInfo.self, predicate: predicate, sortBy: sort)
         if savedTeams.count > 0 {
             teamInfo = savedTeams.first
         } else {

@@ -27,7 +27,7 @@ struct TeamDetailInfoList: View {
                                 TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
                             }
                         case .venue:
-                            EmptyView()
+                            TeamInfoVenueView(viewModel: viewModel)
                         case .players:
                             EmptyView()
                         case .teamStats:
@@ -62,6 +62,36 @@ struct TeamInfoLeaguesList: View {
             LogoListRow(listable: league, showSelectable: false, backgroundColor: listRowBackgroundColor)
                 .listRowBackground(listRowBackgroundColor)
                 .frame(maxHeight: 30)
+        }
+    }
+}
+
+struct TeamInfoVenueView: View {
+    let viewModel: TeamsViewModel
+    
+    var body: some View {
+        VStack {
+            if let image = viewModel.teamInfo?.venue.image {
+                AsyncImage(url: URL(string: image)) { result in
+                    result.image?
+                        .resizable()
+                        .scaledToFit()
+                }
+                .frame(maxWidth: .infinity, maxHeight: 150)
+            }
+            
+            if let stadiumName = viewModel.teamInfo?.venue.name {
+                Text(stadiumName)
+                    .font(.system(size: 16, weight: .semibold))
+                    .padding(.top, 8)
+            }
+            
+            if let teamInfo = viewModel.teamInfo, let city = teamInfo.venue.city, let country = teamInfo.team.country {
+                Text("\(city), \(country)")
+            }
+            if let capacity = viewModel.teamInfo?.venue.capacity {
+                Text("Capacity: \(capacity)")
+            }
         }
     }
 }
