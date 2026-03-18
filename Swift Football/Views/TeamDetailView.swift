@@ -23,6 +23,37 @@ enum TeamDetailInfo: Int {
             return "Statistics"
         }
     }
+    
+    func sections() -> [TeamDetailInfoSections] {
+        switch self {
+        case .overview:
+            return [.leagues, .venue]
+        case .players:
+            return [.players]
+        case .statistics:
+            return [.teamStats]
+        }
+    }
+}
+
+enum TeamDetailInfoSections: Int {
+    case leagues
+    case venue
+    case players
+    case teamStats
+    
+    func sectionTitle() -> String {
+        switch self {
+        case .leagues:
+            return "Leagues"
+        case .venue:
+            return "Venue"
+        case .players:
+            return "Players"
+        case .teamStats:
+            return "Team Statistics"
+        }
+    }
 }
 
 struct TeamDetailView: View {
@@ -51,10 +82,10 @@ struct TeamDetailView: View {
                     TeamInfoButtonScrollView(detailInfoViews: detailInfoViews, scrollPosition: $scrollPosition)
                     ScrollView(.horizontal) {
                         HStack {
-                            ForEach(detailInfoViews, id: \.self) { view in
-                                TeamDetailInfoList()
+                            ForEach(detailInfoViews, id: \.self) { infoView in
+                                TeamDetailInfoList(detailInfo: infoView, viewModel: viewModel)
                                     .containerRelativeFrame(.horizontal, count: 1, spacing: 0)
-                                    .id(view.rawValue)
+                                    .id(infoView.rawValue)
                             }
                         }
                     }
@@ -82,6 +113,7 @@ struct TeamDetailView: View {
     func fetch() {
         Task {
             await viewModel.fetchTeamForDetail(id: teamId)
+            await viewModel.fetchInvolvedLeagues(team: teamId, season: selectedSeason)
         }
     }
 }
