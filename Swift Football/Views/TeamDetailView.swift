@@ -52,9 +52,8 @@ struct TeamDetailView: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(detailInfoViews, id: \.self) { view in
-                                Rectangle()
+                                TeamDetailInfoList()
                                     .containerRelativeFrame(.horizontal, count: 1, spacing: 0)
-                                    .foregroundStyle(.red)
                                     .id(view.rawValue)
                             }
                         }
@@ -136,23 +135,34 @@ struct TeamInfoButtonScrollView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     let detailInfoViews: [TeamDetailInfo]
     @Binding var scrollPosition: ScrollPosition
+    @State var currentSelected: Int = 0
     
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
                 ForEach(detailInfoViews, id: \.self) { view in
                     Button {
+                        currentSelected = view.rawValue
                         withAnimation {
                             scrollPosition.scrollTo(id: view.rawValue)
                         }
                     } label: {
                         Text(view.buttonTitle())
-                            .foregroundStyle(colorScheme == .light ? .black : .white)
+                            .foregroundStyle(buttonColor(viewId: view.rawValue))
                             .font(.system(size: 16, weight: .semibold))
                     }
                         .containerRelativeFrame(.horizontal, count: 3, spacing: 10)
                 }
             }
+        }
+    }
+    
+    func buttonColor(viewId: Int) -> Color {
+        let isSelected = currentSelected == viewId
+        if colorScheme == .light {
+            return isSelected ? .black : .gray
+        } else {
+            return isSelected ? .white : .gray
         }
     }
 }
