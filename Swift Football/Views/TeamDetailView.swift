@@ -114,6 +114,7 @@ struct TeamDetailView: View {
         Task {
             await viewModel.fetchTeamForDetail(id: teamId)
             await viewModel.fetchInvolvedLeagues(team: teamId, season: selectedSeason)
+            await viewModel.fetchPlayerStats(team: teamId, season: selectedSeason)
         }
     }
 }

@@ -12,8 +12,10 @@ import SwiftData
 class TeamsViewModel: BaseViewModel {
     var teamInfo: TeamInfo?
     var leagues: [LeagueDetails] = []
+    var players: [PlayerInfoContainer] = []
     private let teamsFetcher = TeamsFetcher()
     private let leaguesFetcher = LeaguesFetcher()
+    private let playersFetcher = PlayersFetcher()
     private let dataProvider: SwiftDataProvider
     private var selectedSeason: Int
     
@@ -84,6 +86,16 @@ class TeamsViewModel: BaseViewModel {
         teamInfo?.isSelected.toggle()
         Task {
             await dataProvider.save()
+        }
+    }
+    
+    func fetchPlayerStats(team: Int, season: Int) async {
+        do {
+            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: season, team: team)
+            //players = response.players
+            dump(response)
+        } catch {
+            loadState = .error(error.localizedDescription)
         }
     }
 }

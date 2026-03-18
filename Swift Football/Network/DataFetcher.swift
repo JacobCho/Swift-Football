@@ -40,6 +40,7 @@ enum Endpoint: String {
     case standings
     case seasons = "leagues/seasons"
     case teams
+    case players
     
     func jsonFilename(with parameters: [String: String]? = nil) -> String {
         switch self {
@@ -56,6 +57,11 @@ enum Endpoint: String {
             return "seasons"
         case .teams:
             return "man-utd-teams"
+        case .players:
+            if let parameters, parameters.keys.contains("team") {
+                return "man-utd-2024-player-statistics-page-1"
+            }
+            return ""
         }
     }
     
@@ -64,12 +70,14 @@ enum Endpoint: String {
         case .countries:
             return true
         case .leagues:
-            return false
+            return true
         case .standings:
-            return false
+            return true
         case .seasons:
             return true
         case .teams:
+            return true
+        case .players:
             return true
         }
     }
