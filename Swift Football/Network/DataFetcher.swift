@@ -59,6 +59,17 @@ enum Endpoint: String {
             return "man-utd-teams"
         case .players:
             if let parameters, parameters.keys.contains("team") {
+                if let page = parameters["page"], let pageNum = Int(page) {
+                    if pageNum == 1 {
+                        return "man-utd-2024-player-statistics-page-1"
+                    } else if pageNum == 2 {
+                        return "man-utd-2024-player-statistics-page-2"
+                    } else if pageNum == 3 {
+                        return "man-utd-2024-player-statistics-page-3"
+                    } else if pageNum == 4 {
+                        return "man-utd-2024-player-statistics-page-4"
+                    }
+                }
                 return "man-utd-2024-player-statistics-page-1"
             }
             return ""

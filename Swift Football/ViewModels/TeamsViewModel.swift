@@ -89,13 +89,22 @@ class TeamsViewModel: BaseViewModel {
         }
     }
     
-    func fetchPlayerStats(team: Int, season: Int) async {
+    func fetchPlayerStats(team: Int, season: Int, page: Int? = 1) async {
         do {
-            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: season, team: team)
-            //players = response.players
-            dump(response)
+            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: season, team: team, page: page)
+            
+            mergePlayersWithoutDuplicates(newPlayers: response.players)
+            if response.paging.current < response.paging.total {
+                await fetchPlayerStats(team: team, season: season, page: response.paging.current + 1)
+            }
         } catch {
             loadState = .error(error.localizedDescription)
         }
+    }
+    
+    func mergePlayersWithoutDuplicates(newPlayers: [PlayerInfoContainer]) {
+        let existingIDs = Set(players.map(\.player.id))
+        let uniqueNewPlayers = newPlayers.filter { !existingIDs.contains($0.player.id) }
+        players.append(contentsOf: uniqueNewPlayers)
     }
 }

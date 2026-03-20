@@ -77,7 +77,7 @@ struct TeamInfoVenueView: View {
                         .resizable()
                         .scaledToFit()
                 }
-                .frame(maxWidth: .infinity, maxHeight: 150)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
             if let stadiumName = viewModel.teamInfo?.venue.name {

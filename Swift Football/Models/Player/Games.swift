@@ -7,12 +7,20 @@
 
 import Foundation
 
+enum Position: String, Codable {
+    case goalkeeper = "Goalkeeper"
+    case defender = "Defender"
+    case midfielder = "Midfielder"
+    case attacker = "Attacker"
+    case forward = "Forward"
+}
+
 struct Games: Decodable {
     let appearances: Int?
     let lineups: Int?
     let minutes: Int?
     let number: Int?
-    let position: String
+    let position: Position
     let rating: String?
     let captain: Bool
 }
