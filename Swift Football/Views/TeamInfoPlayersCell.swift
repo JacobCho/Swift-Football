@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TeamInfoPlayersCell: View {
     let playerInfo: PlayerInfoContainer
+    var showAge = true
     
     var body: some View {
         HStack {
@@ -33,7 +34,7 @@ struct TeamInfoPlayersCell: View {
             }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 5)
-            if let age = playerInfo.player.age {
+            if let age = playerInfo.player.age, showAge {
                 Text((String(age)))
                     .frame(minWidth: 20, maxWidth: 20, alignment: .trailing)
                     .padding()

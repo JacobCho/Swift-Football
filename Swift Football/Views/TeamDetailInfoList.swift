@@ -27,6 +27,11 @@ struct TeamDetailInfoList: View {
                                 TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
                                     .frame(maxHeight: 30)
                             }
+                        case .captain:
+                            ForEach(viewModel.getCaptain(), id: \.player.id) { captain in
+                                TeamInfoPlayersCell(playerInfo: captain, showAge: false)
+                                    .frame(maxHeight: 30)
+                            }
                         case .venue:
                             TeamInfoVenueView(viewModel: viewModel)
                         case .players:

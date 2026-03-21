@@ -27,7 +27,7 @@ enum TeamDetailInfo: Int {
     func sections() -> [TeamDetailInfoSections] {
         switch self {
         case .overview:
-            return [.leagues, .venue]
+            return [.leagues, .captain, .venue]
         case .players:
             return [.players]
         case .statistics:
@@ -38,6 +38,7 @@ enum TeamDetailInfo: Int {
 
 enum TeamDetailInfoSections: Int {
     case leagues
+    case captain
     case venue
     case players
     case teamStats
@@ -46,6 +47,8 @@ enum TeamDetailInfoSections: Int {
         switch self {
         case .leagues:
             return "Leagues"
+        case .captain:
+            return "Captain"
         case .venue:
             return "Venue"
         case .players:

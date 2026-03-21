@@ -1880,7 +1880,7 @@
                         "number": null,
                         "position": "Midfielder",
                         "rating": "7.605555",
-                        "captain": false
+                        "captain": true
                     },
                     "substitutes": {
                         "in": 1,

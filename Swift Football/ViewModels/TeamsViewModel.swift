@@ -108,12 +108,16 @@ class TeamsViewModel: BaseViewModel {
         players.append(contentsOf: uniqueNewPlayers)
     }
     
+    func getCaptain() -> [PlayerInfoContainer] {
+        return players.filter { $0.getStatsWithHighestApps()?.games.captain == true }
+    }
+    
     func getPlayerPositions() -> [Position] {
         return [.goalkeeper, .defender, .midfielder, .attacker, .forward]
     }
     
     func getPlayers(for position: Position) -> [PlayerInfoContainer] {
-        players.filter { $0.statistics.first?.games.position == position }.sorted {
+        players.filter { $0.getStatsWithHighestApps()?.games.position == position }.sorted {
             $0.getAllApps() > $1.getAllApps()
         }
     }
