@@ -144,9 +144,13 @@ struct TeamHeaderView: View {
     var body: some View {
         HStack {
             AsyncImage(url: URL(string: logo)) { result in
-                result.image?
-                    .resizable()
-                    .scaledToFit()
+                if let image = result.image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                } else if let _ = result.error {
+                    Image(systemName: "person.3.fill")
+                }
             }
             .frame(maxWidth: 70, maxHeight: 70, alignment: .leading)
             .padding(.leading, 8)

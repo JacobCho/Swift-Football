@@ -107,4 +107,16 @@ class TeamsViewModel: BaseViewModel {
         let uniqueNewPlayers = newPlayers.filter { !existingIDs.contains($0.player.id) }
         players.append(contentsOf: uniqueNewPlayers)
     }
+    
+    func getPlayerPositions() -> [Position] {
+        return [.goalkeeper, .defender, .midfielder, .attacker, .forward]
+    }
+    
+    func getPlayers(for position: Position) -> [PlayerInfoContainer] {
+        players.filter { $0.statistics.first?.games.position == position }.sorted {
+            $0.getAllApps() > $1.getAllApps()
+        }
+    }
+    
+    
 }

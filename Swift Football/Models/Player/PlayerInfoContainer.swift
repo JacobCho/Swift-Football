@@ -10,4 +10,13 @@ import Foundation
 struct PlayerInfoContainer: Decodable {
     let player: Player
     let statistics: [StatisticsContainer]
+    
+    func getAllApps() -> Int {
+        return self.statistics.reduce(0) { accumulator, statistics in
+            if let appearences = statistics.games.appearences {
+                return accumulator + appearences
+            }
+            return accumulator
+        }
+    }
 }

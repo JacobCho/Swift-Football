@@ -25,11 +25,21 @@ struct TeamDetailInfoList: View {
                         case .leagues:
                             ForEach(viewModel.leagues) { leagueDetails in
                                 TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
+                                    .frame(maxHeight: 30)
                             }
                         case .venue:
                             TeamInfoVenueView(viewModel: viewModel)
                         case .players:
-                            EmptyView()
+                            ForEach(viewModel.getPlayerPositions(), id: \.rawValue) { position in
+                                DisclosureGroup(position.rawValue) {
+                                    ForEach(viewModel.getPlayers(for: position), id: \.player.id) { playerInfo in
+                                        TeamInfoPlayersCell(playerInfo: playerInfo)
+                                            .frame(maxHeight: 30)
+                                    }
+                                }
+                                .disclosureGroupStyle(GroupStyle())
+                                .listRowBackground(listRowBackgroundColor())
+                            }
                         case .teamStats:
                             EmptyView()
                         }
@@ -54,44 +64,27 @@ struct TeamDetailInfoList: View {
     }
 }
 
-struct TeamInfoLeaguesList: View {
-    let leagueDetails: LeagueDetails
-    let listRowBackgroundColor: Color
-    var body: some View {
-        if let league = leagueDetails.league {
-            LogoListRow(listable: league, showSelectable: false, backgroundColor: listRowBackgroundColor)
-                .listRowBackground(listRowBackgroundColor)
-                .frame(maxHeight: 30)
-        }
-    }
-}
+struct GroupStyle: DisclosureGroupStyle {
 
-struct TeamInfoVenueView: View {
-    let viewModel: TeamsViewModel
-    
-    var body: some View {
-        VStack {
-            if let image = viewModel.teamInfo?.venue.image {
-                AsyncImage(url: URL(string: image)) { result in
-                    result.image?
-                        .resizable()
-                        .scaledToFit()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+                .font(.system(size: 16.0, weight: .semibold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text("Age")
+                .font(.system(size: 12, weight: .semibold))
+                .frame(alignment: .trailing)
+                .padding(.trailing, 10)
+        }
+        .onTapGesture {
+            withAnimation {
+                configuration.isExpanded.toggle()
             }
-            
-            if let stadiumName = viewModel.teamInfo?.venue.name {
-                Text(stadiumName)
-                    .font(.system(size: 16, weight: .semibold))
-                    .padding(.top, 8)
-            }
-            
-            if let teamInfo = viewModel.teamInfo, let city = teamInfo.venue.city, let country = teamInfo.team.country {
-                Text("\(city), \(country)")
-            }
-            if let capacity = viewModel.teamInfo?.venue.capacity {
-                Text("Capacity: \(capacity)")
-            }
+        }
+        if configuration.isExpanded {
+            configuration.content
+                .padding(.leading, 8)
+                .disclosureGroupStyle(self)
         }
     }
 }

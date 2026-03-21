@@ -13,10 +13,26 @@ enum Position: String, Codable {
     case midfielder = "Midfielder"
     case attacker = "Attacker"
     case forward = "Forward"
+    
+    func abbrv() -> String {
+        switch self {
+        case .goalkeeper:
+            return "GK"
+        case .defender:
+            return "DF"
+        case .midfielder:
+            return "MF"
+        case .attacker:
+            return "ATK"
+        case .forward:
+            return "FW"
+        }
+        
+    }
 }
 
 struct Games: Decodable {
-    let appearances: Int?
+    let appearences: Int?
     let lineups: Int?
     let minutes: Int?
     let number: Int?

@@ -172,9 +172,13 @@ struct StandingTeamCell: View {
                 .frame(maxWidth: 3)
             StandingsText(text: "\(standing.rank)")
             AsyncImage(url: URL(string: standing.team?.logo ?? "")) { result in
-                result.image?
-                    .resizable()
-                    .scaledToFit()
+                if let image = result.image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                } else if let _ = result.error {
+                    Image(systemName: "person.3.fill")
+                }
             }
             .frame(width: 20, height: 20)
             Text(standing.team?.name ?? "")
