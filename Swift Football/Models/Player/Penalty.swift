@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Penalty: Decodable {
+struct Penalty: Decodable, Statistic {
     let won: Int?
     let comited: Int?
     let scored: Int?

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Fouls: Decodable {
+struct Fouls: Decodable, Statistic {
     let drawn: Int?
     let committed: Int?
 }

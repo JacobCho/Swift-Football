@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Passes: Decodable {
+struct Passes: Decodable, Statistic {
     let total: Int?
     let key: Int?
     let accuracy: Int?

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Dribbles: Decodable {
+struct Dribbles: Decodable, Statistic {
     let attempts: Int?
     let success: Int?
     let pass: Int?

@@ -31,7 +31,7 @@ enum Position: String, Codable {
     }
 }
 
-struct Games: Decodable {
+struct Games: Decodable, Statistic {
     let appearences: Int?
     let lineups: Int?
     let minutes: Int?

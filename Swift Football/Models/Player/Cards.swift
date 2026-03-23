@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Cards: Decodable {
+struct Cards: Decodable, Statistic {
     let yellow: Int?
     let yellowRed: Int?
     let red: Int?

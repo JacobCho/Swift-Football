@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Substitutes: Decodable {
+struct Substitutes: Decodable, Statistic {
     let inAppearances: Int?
     let outAppearances: Int?
     let benchAppearances: Int?

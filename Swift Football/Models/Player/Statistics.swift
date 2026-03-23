@@ -7,6 +7,9 @@
 
 import Foundation
 
+protocol Statistic {
+}
+
 enum Statistics {
     case team
     case league

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Tackles: Decodable {
+struct Tackles: Decodable, Statistic {
     let total: Int?
     let blocks: Int?
     let interceptions: Int?

@@ -117,10 +117,22 @@ class TeamsViewModel: BaseViewModel {
     }
     
     func getPlayers(for position: Position) -> [PlayerInfoContainer] {
-        players.filter { $0.getStatsWithHighestApps()?.games.position == position }.sorted {
+        return players.filter { $0.getStatsWithHighestApps()?.games.position == position }.sorted {
             $0.getAllApps() > $1.getAllApps()
         }
     }
     
-    
+    func getPlayersWithMostGoals(for league: LeagueDTO? = nil, limit: Int) -> [PlayerInfoContainer] {
+        if let league {
+            let sorted = players.sorted { player1, player2 in
+                player1.getGoals(for: league) > player2.getGoals(for: league)
+            }
+            return Array(sorted.prefix(limit))
+        } else {
+            let sorted = players.sorted { player1, player2 in
+                player1.getTotalGoals() > player2.getTotalGoals()
+            }
+            return Array(sorted.prefix(limit))
+        }
+    }
 }

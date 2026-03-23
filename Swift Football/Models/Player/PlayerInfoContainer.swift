@@ -23,4 +23,29 @@ struct PlayerInfoContainer: Decodable {
     func getStatsWithHighestApps() -> StatisticsContainer? {
         return self.statistics.max { $0.games.appearences ?? 0 > $1.games.appearences ?? 0 }
     }
+    
+    func getContainer(for league: LeagueDTO) -> StatisticsContainer? {
+        for statistic in statistics {
+            if statistic.league.id == league.id {
+                return statistic
+            }
+        }
+        
+        return nil
+    }
+    
+    func getTotalGoals() -> Int {
+        return self.statistics.reduce(0) { accumulator, statistics in
+            if let goals = statistics.goals.total {
+                return accumulator + goals
+            }
+            return accumulator
+        }
+    }
+    
+    func getGoals(for league: LeagueDTO) -> Int {
+        let container = getContainer(for: league)
+        
+        return container?.goals.total ?? 0
+    }
 }

@@ -13,7 +13,7 @@ enum LeagueType: String, Codable {
     case cup = "Cup"
 }
 
-struct LeagueDTO: Identifiable, Decodable, LogoListable, Hashable {
+struct LeagueDTO: Identifiable, Decodable, LogoListable, Hashable, Statistic {
     let id: Int
     let name: String?
     let type: LeagueType?

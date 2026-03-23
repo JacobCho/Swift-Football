@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Goals: Decodable {
+struct Goals: Decodable, Statistic {
     let total: Int?
     let conceded: Int?
     let assists: Int?

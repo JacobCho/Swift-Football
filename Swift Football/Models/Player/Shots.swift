@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Shots: Decodable {
+struct Shots: Decodable, Statistic {
     let total: Int?
     let on: Int?
 }

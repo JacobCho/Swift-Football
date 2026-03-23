@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Duels: Decodable {
+struct Duels: Decodable, Statistic {
     let total: Int?
     let won: Int?
 }

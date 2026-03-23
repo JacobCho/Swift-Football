@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-struct TeamDTO: Decodable, LogoListable, Hashable {
+struct TeamDTO: Decodable, LogoListable, Hashable, Statistic {
     let id: Int
     let name: String?
     let logo: String?
