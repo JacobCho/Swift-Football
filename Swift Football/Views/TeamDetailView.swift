@@ -11,7 +11,8 @@ import SwiftUI
 enum TeamDetailInfo: Int {
     case overview
     case players
-    case statistics
+    case teamStats
+    case playerStats
     
     func buttonTitle() -> String {
         switch self {
@@ -19,8 +20,10 @@ enum TeamDetailInfo: Int {
             return "Overview"
         case .players:
             return "Players"
-        case .statistics:
-            return "Statistics"
+        case .teamStats:
+            return "Team Statistics"
+        case .playerStats:
+            return "Player Statistics"
         }
     }
     
@@ -30,8 +33,10 @@ enum TeamDetailInfo: Int {
             return [.leagues, .captain, .venue]
         case .players:
             return [.players]
-        case .statistics:
+        case .teamStats:
             return [.teamStats]
+        case .playerStats:
+            return [.playerStats]
         }
     }
 }
@@ -42,6 +47,7 @@ enum TeamDetailInfoSections: Int {
     case venue
     case players
     case teamStats
+    case playerStats
     
     func sectionTitle() -> String {
         switch self {
@@ -55,13 +61,15 @@ enum TeamDetailInfoSections: Int {
             return "Players"
         case .teamStats:
             return "Team Statistics"
+        case .playerStats:
+            return "Player Statistics"
         }
     }
 }
 
 struct TeamDetailView: View {
     @State private var viewModel: TeamsViewModel
-    @State private var detailInfoViews = [TeamDetailInfo.overview, TeamDetailInfo.players, TeamDetailInfo.statistics]
+    @State private var detailInfoViews = [TeamDetailInfo.overview, TeamDetailInfo.players, TeamDetailInfo.teamStats, TeamDetailInfo.playerStats]
     let teamId: Int
     @State private var selectedSeason: Int
     @State private var scrollPosition: ScrollPosition = ScrollPosition(idType: TeamDetailInfo.RawValue.self, edge: .leading)
@@ -191,10 +199,11 @@ struct TeamInfoButtonScrollView: View {
                             .foregroundStyle(buttonColor(viewId: view.rawValue))
                             .font(.system(size: 16, weight: .semibold))
                     }
-                        .containerRelativeFrame(.horizontal, count: 3, spacing: 10)
+                    .containerRelativeFrame(.horizontal, count: 4, spacing: 5)
                 }
             }
         }
+        .scrollIndicators(.hidden)
     }
     
     func buttonColor(viewId: Int) -> Color {

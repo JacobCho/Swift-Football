@@ -47,6 +47,8 @@ struct TeamDetailInfoList: View {
                             }
                         case .teamStats:
                             EmptyView()
+                        case .playerStats:
+                            EmptyView()
                         }
                     }
                 }
