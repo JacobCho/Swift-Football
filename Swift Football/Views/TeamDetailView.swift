@@ -21,9 +21,9 @@ enum TeamDetailInfo: Int {
         case .players:
             return "Players"
         case .teamStats:
-            return "Team Statistics"
+            return "Team Stats"
         case .playerStats:
-            return "Player Statistics"
+            return "Player Stats"
         }
     }
     
@@ -199,7 +199,7 @@ struct TeamInfoButtonScrollView: View {
                             .foregroundStyle(buttonColor(viewId: view.rawValue))
                             .font(.system(size: 16, weight: .semibold))
                     }
-                    .containerRelativeFrame(.horizontal, count: 4, spacing: 5)
+                    .containerRelativeFrame(.horizontal, count: 4, spacing: 10, alignment: .center)
                 }
             }
         }

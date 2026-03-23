@@ -21,7 +21,7 @@ struct PlayerInfoContainer: Decodable {
     }
     
     func getStatsWithHighestApps() -> StatisticsContainer? {
-        return self.statistics.max { $0.games.appearences ?? 0 > $1.games.appearences ?? 0 }
+        return self.statistics.max { $0.games.appearences ?? 0 < $1.games.appearences ?? 0 }
     }
     
     func getContainer(for league: LeagueDTO) -> StatisticsContainer? {
