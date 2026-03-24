@@ -70,11 +70,39 @@ class TeamsViewModel: BaseViewModel {
     func fetchInvolvedLeagues(team: Int, season: Int) async {
         do {
             let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: season, team: team)
-            leagues = response.leaguesDetails
+            leagues = orderLeagues(leagues: response.leaguesDetails)
         } catch {
             if let descError = error as? DescriptiveError  {
                 loadState = .error(descError.description)
             }
+        }
+    }
+    
+    func orderLeagues(leagues: [LeagueDetails]) -> [LeagueDetails] {
+        /// Priority of league sorting:
+        /// 1. Competition lasts longer than 1 month
+        /// 2. Competition is in same country as team
+        /// 3. Competition is of league type
+        /// 4. Competition can return standings from API
+        return leagues.sorted { league1, league2 in
+            let comparisons = [
+                (league1.lastsLongerThanOneMonth(selectedSeason: selectedSeason), league2.lastsLongerThanOneMonth(selectedSeason: selectedSeason)),
+                (league1.isInTeamCountry(teamInfo: teamInfo), league2.isInTeamCountry(teamInfo: teamInfo)),
+                (league1.isLeagueType(), league2.isLeagueType()),
+                (league1.hasStandings(for: selectedSeason), league2.hasStandings(for: selectedSeason)),
+            ]
+
+            for comparison in comparisons where comparison.0 != comparison.1 {
+                return comparison.0 && !comparison.1
+            }
+
+            let leftName = league1.league?.name ?? ""
+            let rightName = league2.league?.name ?? ""
+            if leftName != rightName {
+                return leftName.localizedCaseInsensitiveCompare(rightName) == .orderedAscending
+            }
+
+            return league1.id < league2.id
         }
     }
     
