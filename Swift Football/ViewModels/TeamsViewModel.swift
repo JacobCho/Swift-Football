@@ -13,6 +13,7 @@ class TeamsViewModel: BaseViewModel {
     var teamInfo: TeamInfo?
     var leagues: [LeagueDetails] = []
     var players: [PlayerInfoContainer] = []
+    var teamStats: TeamStats?
     private let teamsFetcher = TeamsFetcher()
     private let leaguesFetcher = LeaguesFetcher()
     private let playersFetcher = PlayersFetcher()
@@ -71,6 +72,17 @@ class TeamsViewModel: BaseViewModel {
         do {
             let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: season, team: team)
             leagues = orderLeagues(leagues: response.leaguesDetails)
+        } catch {
+            if let descError = error as? DescriptiveError  {
+                loadState = .error(descError.description)
+            }
+        }
+    }
+    
+    func fetchTeamStats(team: Int, league: Int, season: Int) async {
+        do {
+            let response: TeamStatsResponse = try await teamsFetcher.fetchTeamStats(team: team, league: league, season: season)
+            teamStats = response.stats
         } catch {
             if let descError = error as? DescriptiveError  {
                 loadState = .error(descError.description)

@@ -126,6 +126,7 @@ struct TeamDetailView: View {
             await viewModel.fetchTeamForDetail(id: teamId)
             await viewModel.fetchInvolvedLeagues(team: teamId, season: selectedSeason)
             await viewModel.fetchPlayerStats(team: teamId, season: selectedSeason)
+            await viewModel.fetchTeamStats(team: teamId, league: 39, season: selectedSeason)
         }
     }
 }

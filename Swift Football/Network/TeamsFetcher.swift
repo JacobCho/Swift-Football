@@ -62,4 +62,22 @@ class TeamsFetcher: DataFetcher {
             throw error
         }
     }
+    
+    /// Parameters:
+    /// team: id of the team
+    /// league: id of the league
+    /// season: Season of the team; Exactly 4 chars
+    
+    func fetchTeamStats(team: Int, league: Int, season: Int) async throws -> TeamStatsResponse {
+        let parameters: [String: String] = ["team": "\(team)",
+                                            "league": "\(league)",
+                                            "season": "\(season)"]
+        
+        do {
+            let response: TeamStatsResponse = try await self.fetch(endPoint: .teamsStats, parameters: parameters)
+            return response
+        } catch {
+            throw error
+        }
+    }
 }

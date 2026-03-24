@@ -40,6 +40,7 @@ enum Endpoint: String {
     case standings
     case seasons = "leagues/seasons"
     case teams
+    case teamsStats = "teams/statistics"
     case players
     
     func jsonFilename(with parameters: [String: String]? = nil) -> String {
@@ -57,6 +58,8 @@ enum Endpoint: String {
             return "seasons"
         case .teams:
             return "man-utd-teams"
+        case .teamsStats:
+            return "man-utd-prem-2024-teams-stats"
         case .players:
             if let parameters, parameters.keys.contains("team") {
                 if let page = parameters["page"], let pageNum = Int(page) {
@@ -87,6 +90,8 @@ enum Endpoint: String {
         case .seasons:
             return true
         case .teams:
+            return true
+        case .teamsStats:
             return true
         case .players:
             return true
@@ -147,6 +152,7 @@ class DataFetcher {
             let data = try Data(contentsOf: url)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
+            print(String(describing: error))
             throw NetworkError.testFileError
         }
     }
