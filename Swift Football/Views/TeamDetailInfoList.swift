@@ -49,16 +49,7 @@ struct TeamDetailInfoList: View {
                                     refetchPlayers()
                                 })
                             } else {
-                                ForEach(viewModel.getPlayerPositions(), id: \.rawValue) { position in
-                                    DisclosureGroup(position.rawValue) {
-                                        ForEach(viewModel.getPlayers(for: position), id: \.player.id) { playerInfo in
-                                            TeamInfoPlayersCell(playerInfo: playerInfo)
-                                                .frame(maxHeight: 30)
-                                        }
-                                    }
-                                    .disclosureGroupStyle(GroupStyle())
-                                    .listRowBackground(listRowBackgroundColor())
-                                }
+                                TeamPlayersList(viewModel: viewModel, listRowBackgroundColor: listRowBackgroundColor())
                             }
                         case .teamStats:
                             EmptyView()
