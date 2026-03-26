@@ -23,27 +23,42 @@ struct TeamDetailInfoList: View {
                     Section(section.sectionTitle()) {
                         switch section {
                         case .leagues:
-                            ForEach(viewModel.leagues) { leagueDetails in
-                                TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
-                                    .frame(maxHeight: 30)
+                            if let error = viewModel.leaguesError {
+                                LoadStateView(loadState: .error(error.description), buttonAction: {
+                                    refetchLeagues()
+                                })
+                            } else {
+                                ForEach(viewModel.leagues) { leagueDetails in
+                                    TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
+                                        .frame(maxHeight: 30)
+                                }
                             }
                         case .captain:
-                            ForEach(viewModel.getCaptain(), id: \.player.id) { captain in
-                                TeamInfoPlayersCell(playerInfo: captain, showAge: false)
-                                    .frame(maxHeight: 30)
+                            let captain = viewModel.getCaptain()
+                            if captain.count > 0 {
+                                ForEach(captain, id: \.player.id) { captain in
+                                    TeamInfoPlayersCell(playerInfo: captain, showAge: false)
+                                        .frame(maxHeight: 30)
+                                }
                             }
                         case .venue:
                             TeamInfoVenueView(viewModel: viewModel)
                         case .players:
-                            ForEach(viewModel.getPlayerPositions(), id: \.rawValue) { position in
-                                DisclosureGroup(position.rawValue) {
-                                    ForEach(viewModel.getPlayers(for: position), id: \.player.id) { playerInfo in
-                                        TeamInfoPlayersCell(playerInfo: playerInfo)
-                                            .frame(maxHeight: 30)
+                            if let error = viewModel.playersError {
+                                LoadStateView(loadState: .error(error.description), buttonAction: {
+                                    refetchPlayers()
+                                })
+                            } else {
+                                ForEach(viewModel.getPlayerPositions(), id: \.rawValue) { position in
+                                    DisclosureGroup(position.rawValue) {
+                                        ForEach(viewModel.getPlayers(for: position), id: \.player.id) { playerInfo in
+                                            TeamInfoPlayersCell(playerInfo: playerInfo)
+                                                .frame(maxHeight: 30)
+                                        }
                                     }
+                                    .disclosureGroupStyle(GroupStyle())
+                                    .listRowBackground(listRowBackgroundColor())
                                 }
-                                .disclosureGroupStyle(GroupStyle())
-                                .listRowBackground(listRowBackgroundColor())
                             }
                         case .teamStats:
                             EmptyView()
@@ -55,6 +70,24 @@ struct TeamDetailInfoList: View {
             }
             .scrollContentBackground(.hidden)
             .clipped()
+        }
+    }
+    
+    func refetchLeagues() {
+        guard let teamId = viewModel.teamInfo?.team.id else {
+            return
+        }
+        Task {
+            await viewModel.fetchInvolvedLeagues(team: teamId)
+        }
+    }
+    
+    func refetchPlayers() {
+        guard let teamId = viewModel.teamInfo?.team.id else {
+            return
+        }
+        Task {
+            await viewModel.fetchPlayerStats(team: teamId)
         }
     }
     

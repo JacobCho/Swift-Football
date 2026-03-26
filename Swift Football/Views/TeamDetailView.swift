@@ -124,9 +124,9 @@ struct TeamDetailView: View {
     func fetch() {
         Task {
             await viewModel.fetchTeamForDetail(id: teamId)
-            await viewModel.fetchInvolvedLeagues(team: teamId, season: selectedSeason)
-            await viewModel.fetchPlayerStats(team: teamId, season: selectedSeason)
-            await viewModel.fetchTeamStats(team: teamId, league: 39, season: selectedSeason)
+            await viewModel.fetchInvolvedLeagues(team: teamId)
+            await viewModel.fetchPlayerStats(team: teamId)
+            await viewModel.fetchTeamStats(team: teamId, league: 39)
         }
     }
 }

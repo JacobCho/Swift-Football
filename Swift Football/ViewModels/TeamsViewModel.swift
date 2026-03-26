@@ -11,9 +11,16 @@ import SwiftData
 @Observable
 class TeamsViewModel: BaseViewModel {
     var teamInfo: TeamInfo?
+    
     var leagues: [LeagueDetails] = []
+    var leaguesError: DescriptiveError?
+    
     var players: [PlayerInfoContainer] = []
+    var playersError: DescriptiveError?
+    
     var teamStats: TeamStats?
+    var teamStatsError: DescriptiveError?
+    
     private let teamsFetcher = TeamsFetcher()
     private let leaguesFetcher = LeaguesFetcher()
     private let playersFetcher = PlayersFetcher()
@@ -68,24 +75,26 @@ class TeamsViewModel: BaseViewModel {
         loadingFinished(isEmpty: teamInfo == nil)
     }
     
-    func fetchInvolvedLeagues(team: Int, season: Int) async {
+    func fetchInvolvedLeagues(team: Int) async {
         do {
-            let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: season, team: team)
+            leaguesError = nil
+            let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: selectedSeason, team: team)
             leagues = orderLeagues(leagues: response.leaguesDetails)
         } catch {
             if let descError = error as? DescriptiveError  {
-                loadState = .error(descError.description)
+                leaguesError = descError
             }
         }
     }
     
-    func fetchTeamStats(team: Int, league: Int, season: Int) async {
+    func fetchTeamStats(team: Int, league: Int) async {
         do {
-            let response: TeamStatsResponse = try await teamsFetcher.fetchTeamStats(team: team, league: league, season: season)
+            teamStatsError = nil
+            let response: TeamStatsResponse = try await teamsFetcher.fetchTeamStats(team: team, league: league, season: selectedSeason)
             teamStats = response.stats
         } catch {
             if let descError = error as? DescriptiveError  {
-                loadState = .error(descError.description)
+                teamStatsError = descError
             }
         }
     }
@@ -129,16 +138,19 @@ class TeamsViewModel: BaseViewModel {
         }
     }
     
-    func fetchPlayerStats(team: Int, season: Int, page: Int? = 1) async {
+    func fetchPlayerStats(team: Int, page: Int? = 1) async {
         do {
-            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: season, team: team, page: page)
+            playersError = nil
+            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: selectedSeason, team: team, page: page)
             
             mergePlayersWithoutDuplicates(newPlayers: response.players)
             if response.paging.current < response.paging.total {
-                await fetchPlayerStats(team: team, season: season, page: response.paging.current + 1)
+                await fetchPlayerStats(team: team, page: response.paging.current + 1)
             }
         } catch {
-            loadState = .error(error.localizedDescription)
+            if let descError = error as? DescriptiveError {
+                playersError = descError
+            }
         }
     }
     
