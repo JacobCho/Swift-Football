@@ -52,7 +52,13 @@ struct TeamDetailInfoList: View {
                                 TeamPlayersList(viewModel: viewModel, listRowBackgroundColor: listRowBackgroundColor())
                             }
                         case .teamStats:
-                            EmptyView()
+                            if let error = viewModel.teamStatsError {
+                                LoadStateView(loadState: .error(error.description), buttonAction: {
+                                    refetchPlayers()
+                                })
+                            } else {
+                                TeamStatsList(viewModel: viewModel)
+                            }
                         case .playerStats:
                             EmptyView()
                         }
@@ -65,20 +71,20 @@ struct TeamDetailInfoList: View {
     }
     
     func refetchLeagues() {
-        guard let teamId = viewModel.teamInfo?.team.id else {
-            return
-        }
         Task {
-            await viewModel.fetchInvolvedLeagues(team: teamId)
+            await viewModel.fetchInvolvedLeagues()
         }
     }
     
     func refetchPlayers() {
-        guard let teamId = viewModel.teamInfo?.team.id else {
-            return
-        }
         Task {
-            await viewModel.fetchPlayerStats(team: teamId)
+            await viewModel.fetchPlayerStats()
+        }
+    }
+    
+    func refetchTeamStats() {
+        Task {
+            await viewModel.fetchTeamStats()
         }
     }
     

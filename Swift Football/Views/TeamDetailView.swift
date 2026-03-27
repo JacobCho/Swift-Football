@@ -77,7 +77,7 @@ struct TeamDetailView: View {
     init(teamId: Int, season: Int, dataProvider: SwiftDataProvider) {
         self.teamId = teamId
         _selectedSeason = State(initialValue: season)
-        let viewModel = TeamsViewModel(dataProvider: dataProvider, selectedSeason: season)
+        let viewModel = TeamsViewModel(dataProvider: dataProvider, selectedSeason: season, teamId: teamId)
         _viewModel = State(initialValue: viewModel)
     }
     
@@ -123,10 +123,10 @@ struct TeamDetailView: View {
     
     func fetch() {
         Task {
-            await viewModel.fetchTeamForDetail(id: teamId)
-            await viewModel.fetchInvolvedLeagues(team: teamId)
-            await viewModel.fetchPlayerStats(team: teamId)
-            await viewModel.fetchTeamStats(team: teamId, league: 39)
+            await viewModel.fetchTeamForDetail()
+            await viewModel.fetchInvolvedLeagues()
+            await viewModel.fetchPlayerStats()
+            await viewModel.fetchTeamStats()
         }
     }
 }

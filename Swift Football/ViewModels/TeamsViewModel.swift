@@ -10,6 +10,7 @@ import SwiftData
 
 @Observable
 class TeamsViewModel: BaseViewModel {
+    let teamId: Int
     var teamInfo: TeamInfo?
     
     var leagues: [LeagueDetails] = []
@@ -27,9 +28,10 @@ class TeamsViewModel: BaseViewModel {
     private let dataProvider: SwiftDataProvider
     private var selectedSeason: Int
     
-    init(dataProvider: SwiftDataProvider, selectedSeason: Int) {
+    init(dataProvider: SwiftDataProvider, selectedSeason: Int, teamId: Int) {
         self.dataProvider = dataProvider
         self.selectedSeason = selectedSeason
+        self.teamId = teamId
     }
     
     func teamName() -> String {
@@ -49,11 +51,11 @@ class TeamsViewModel: BaseViewModel {
         return "\(country) · Founded: \(year)"
     }
     
-    func fetchTeamForDetail(id: Int) async {
+    func fetchTeamForDetail() async {
         if loadState == .loading { return }
         loadState = .loading
         
-        let predicate = #Predicate<TeamInfo> { $0.team.id == id }
+        let predicate = #Predicate<TeamInfo> { $0.team.id == teamId }
         let sort: [SortDescriptor<TeamInfo>] = [SortDescriptor(\.id, order: .forward)]
         
         let savedTeams = await dataProvider.fetch(for: TeamInfo.self, predicate: predicate, sortBy: sort)
@@ -61,7 +63,7 @@ class TeamsViewModel: BaseViewModel {
             teamInfo = savedTeams.first
         } else {
             do {
-                let response: TeamsResponse = try await teamsFetcher.fetchTeams(id: id)
+                let response: TeamsResponse = try await teamsFetcher.fetchTeams(id: teamId)
                 teamInfo = response.teams.map { TeamInfo(dto: $0) }.first
                 if let teamInfo {
                     await dataProvider.saveData([teamInfo])
@@ -75,10 +77,10 @@ class TeamsViewModel: BaseViewModel {
         loadingFinished(isEmpty: teamInfo == nil)
     }
     
-    func fetchInvolvedLeagues(team: Int) async {
+    func fetchInvolvedLeagues() async {
+        leaguesError = nil
         do {
-            leaguesError = nil
-            let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: selectedSeason, team: team)
+            let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: selectedSeason, team: teamId)
             leagues = orderLeagues(leagues: response.leaguesDetails)
         } catch {
             if let descError = error as? DescriptiveError  {
@@ -87,10 +89,13 @@ class TeamsViewModel: BaseViewModel {
         }
     }
     
-    func fetchTeamStats(team: Int, league: Int) async {
+    func fetchTeamStats() async {
+        guard let league = leagues.first?.league?.id else {
+            return
+        }
+        teamStatsError = nil
         do {
-            teamStatsError = nil
-            let response: TeamStatsResponse = try await teamsFetcher.fetchTeamStats(team: team, league: league, season: selectedSeason)
+            let response: TeamStatsResponse = try await teamsFetcher.fetchTeamStats(team: teamId, league: league, season: selectedSeason)
             teamStats = response.stats
         } catch {
             if let descError = error as? DescriptiveError  {
@@ -138,14 +143,14 @@ class TeamsViewModel: BaseViewModel {
         }
     }
     
-    func fetchPlayerStats(team: Int, page: Int? = 1) async {
+    func fetchPlayerStats(page: Int? = 1) async {
+        playersError = nil
         do {
-            playersError = nil
-            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: selectedSeason, team: team, page: page)
+            let response: PlayerResponse = try await playersFetcher.fetchPlayersStatistics(season: selectedSeason, team: teamId, page: page)
             
             mergePlayersWithoutDuplicates(newPlayers: response.players)
             if response.paging.current < response.paging.total {
-                await fetchPlayerStats(team: team, page: response.paging.current + 1)
+                await fetchPlayerStats(page: response.paging.current + 1)
             }
         } catch {
             if let descError = error as? DescriptiveError {
