@@ -34,7 +34,7 @@ enum TeamDetailInfo: Int {
         case .players:
             return [.players]
         case .teamStats:
-            return [.teamStats]
+            return [.teamRecord]
         case .playerStats:
             return [.playerStats]
         }
@@ -46,7 +46,7 @@ enum TeamDetailInfoSections: Int {
     case captain
     case venue
     case players
-    case teamStats
+    case teamRecord
     case playerStats
     
     func sectionTitle() -> String {
@@ -59,8 +59,8 @@ enum TeamDetailInfoSections: Int {
             return "Venue"
         case .players:
             return "Players"
-        case .teamStats:
-            return "Team Statistics"
+        case .teamRecord:
+            return "Team Record"
         case .playerStats:
             return "Player Statistics"
         }

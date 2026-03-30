@@ -11,62 +11,71 @@ import SwiftUI
 struct TeamDetailInfoList: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     let detailInfo: TeamDetailInfo
-    let viewModel: TeamsViewModel
+    @State var viewModel: TeamsViewModel
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16, style: .circular)
                 .foregroundStyle(backgroundColor())
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            List {
-                ForEach(detailInfo.sections(), id: \.rawValue) { section in
-                    Section(section.sectionTitle()) {
-                        switch section {
-                        case .leagues:
-                            if let error = viewModel.leaguesError {
-                                LoadStateView(loadState: .error(error.description), buttonAction: {
-                                    refetchLeagues()
-                                })
-                            } else {
-                                ForEach(viewModel.leagues) { leagueDetails in
-                                    TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
-                                        .frame(maxHeight: 30)
+            VStack {
+                if detailInfo == .teamStats {
+                    HStack {
+                        Spacer()
+                        LeaguePicker(viewModel: $viewModel)
+                    }
+                    .padding()
+                }
+                List {
+                    ForEach(detailInfo.sections(), id: \.rawValue) { section in
+                        Section(section.sectionTitle()) {
+                            switch section {
+                            case .leagues:
+                                if let error = viewModel.leaguesError {
+                                    LoadStateView(loadState: .error(error.description), buttonAction: {
+                                        refetchLeagues()
+                                    })
+                                } else {
+                                    ForEach(viewModel.leagues) { leagueDetails in
+                                        TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
+                                            .frame(maxHeight: 30)
+                                    }
                                 }
-                            }
-                        case .captain:
-                            let captain = viewModel.getCaptain()
-                            if captain.count > 0 {
-                                ForEach(captain, id: \.player.id) { captain in
-                                    TeamInfoPlayersCell(playerInfo: captain, showAge: false)
-                                        .frame(maxHeight: 30)
+                            case .captain:
+                                let captain = viewModel.getCaptain()
+                                if captain.count > 0 {
+                                    ForEach(captain, id: \.player.id) { captain in
+                                        TeamInfoPlayersCell(playerInfo: captain, showAge: false)
+                                            .frame(maxHeight: 30)
+                                    }
                                 }
+                            case .venue:
+                                TeamInfoVenueView(viewModel: viewModel)
+                            case .players:
+                                if let error = viewModel.playersError {
+                                    LoadStateView(loadState: .error(error.description), buttonAction: {
+                                        refetchPlayers()
+                                    })
+                                } else {
+                                    TeamPlayersList(viewModel: viewModel, listRowBackgroundColor: listRowBackgroundColor())
+                                }
+                            case .teamRecord:
+                                if let error = viewModel.teamStatsError {
+                                    LoadStateView(loadState: .error(error.description), buttonAction: {
+                                        refetchPlayers()
+                                    })
+                                } else {
+                                    TeamRecordView(viewModel: viewModel)
+                                }
+                            case .playerStats:
+                                EmptyView()
                             }
-                        case .venue:
-                            TeamInfoVenueView(viewModel: viewModel)
-                        case .players:
-                            if let error = viewModel.playersError {
-                                LoadStateView(loadState: .error(error.description), buttonAction: {
-                                    refetchPlayers()
-                                })
-                            } else {
-                                TeamPlayersList(viewModel: viewModel, listRowBackgroundColor: listRowBackgroundColor())
-                            }
-                        case .teamStats:
-                            if let error = viewModel.teamStatsError {
-                                LoadStateView(loadState: .error(error.description), buttonAction: {
-                                    refetchPlayers()
-                                })
-                            } else {
-                                TeamStatsList(viewModel: viewModel)
-                            }
-                        case .playerStats:
-                            EmptyView()
                         }
                     }
                 }
+                .scrollContentBackground(.hidden)
+                .clipped()
             }
-            .scrollContentBackground(.hidden)
-            .clipped()
         }
     }
     
@@ -122,6 +131,35 @@ struct GroupStyle: DisclosureGroupStyle {
             configuration.content
                 .padding(.leading, 8)
                 .disclosureGroupStyle(self)
+        }
+    }
+}
+
+struct LeaguePicker: View {
+    @Binding var viewModel: TeamsViewModel
+    
+    var body: some View {
+        Menu {
+            Picker(viewModel.selectedLeague?.league?.name ?? "", selection: $viewModel.selectedLeague) {
+                ForEach(viewModel.leaguesForStats.enumerated(), id: \.element) { index, leagueDetails in
+                    Text(leagueDetails.league?.name ?? "").tag(leagueDetails)
+                }
+            }
+            .pickerStyle(.inline)
+        } label: {
+            if let leagueName = viewModel.selectedLeague?.league?.name {
+                Label(leagueName, systemImage: "chevron.down")
+                    .frame(maxHeight: 35)
+                    .cornerRadius(8)
+            }
+        }
+        .compositingGroup()
+        .buttonStyle(.glass)
+        .onChange(of: viewModel.selectedLeague) { oldValue, newValue in
+            guard let newLeague = newValue else {
+                return
+            }
+            viewModel.selectedLeague = newLeague
         }
     }
 }

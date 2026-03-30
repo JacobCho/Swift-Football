@@ -8,10 +8,9 @@
 import Foundation
 import SwiftUI
 
-struct TeamStatsList: View {
+struct TeamRecordView: View {
     let viewModel: TeamsViewModel
-    
     var body: some View {
-        
+
     }
 }

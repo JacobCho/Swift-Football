@@ -19,7 +19,9 @@ class TeamsViewModel: BaseViewModel {
     var players: [PlayerInfoContainer] = []
     var playersError: DescriptiveError?
     
+    var leaguesForStats: [LeagueDetails] = []
     var teamStats: TeamStats?
+    var selectedLeague: LeagueDetails?
     var teamStatsError: DescriptiveError?
     
     private let teamsFetcher = TeamsFetcher()
@@ -82,6 +84,8 @@ class TeamsViewModel: BaseViewModel {
         do {
             let response: LeaguesResponse = try await leaguesFetcher.fetchLeagues(season: selectedSeason, team: teamId)
             leagues = orderLeagues(leagues: response.leaguesDetails)
+            leaguesForStats = leagues.filter { $0.seasons?.first?.coverage?.fixtures?.statsFixtures == true }
+            selectedLeague = leagues.first
         } catch {
             if let descError = error as? DescriptiveError  {
                 leaguesError = descError
@@ -90,7 +94,7 @@ class TeamsViewModel: BaseViewModel {
     }
     
     func fetchTeamStats() async {
-        guard let league = leagues.first?.league?.id else {
+        guard let league = selectedLeague?.league?.id else {
             return
         }
         teamStatsError = nil

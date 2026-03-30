@@ -121,7 +121,7 @@ struct PickerMenu: View {
                     Text(season).tag(season)
                 }
             }
-            .pickerStyle(.menu)
+            .pickerStyle(.inline)
         } label: {
             Label("Current Season: \(viewModel.selectedSeason)", systemImage: "chevron.down")
                 .frame(maxHeight: 35)
