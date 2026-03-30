@@ -24,7 +24,8 @@ struct TeamDetailInfoList: View {
                         Spacer()
                         LeaguePicker(viewModel: $viewModel)
                     }
-                    .padding()
+                    .padding(.top, 8)
+                    .padding(.trailing, 8)
                 }
                 List {
                     ForEach(detailInfo.sections(), id: \.rawValue) { section in
@@ -65,7 +66,9 @@ struct TeamDetailInfoList: View {
                                         refetchPlayers()
                                     })
                                 } else {
-                                    TeamRecordView(viewModel: viewModel)
+                                    if let stats = viewModel.teamStats {
+                                        TeamRecordView(stats: stats)
+                                    }
                                 }
                             case .playerStats:
                                 EmptyView()
