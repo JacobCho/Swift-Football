@@ -68,11 +68,9 @@ struct StandingsListView: View {
             }
         }
         .navigationBarTitle(viewModel.navTitle())
-        .onAppear {
-            Task {
-                await viewModel.fetchSeasons()
-                await viewModel.fetchStandings(league: league.id)
-            }
+        .task {
+            await viewModel.fetchSeasons()
+            await viewModel.fetchStandings(league: league.id)
         }
     }
     

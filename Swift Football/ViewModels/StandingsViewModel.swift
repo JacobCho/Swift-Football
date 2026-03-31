@@ -129,7 +129,7 @@ class StandingsViewModel: BaseViewModel {
     }
     
     func fetchStandings(league: Int? = nil) async {
-        if loadState == .loading { return }
+        if loadState == .loading || !standings.isEmpty { return }
         loadState = .loading
         
         do {

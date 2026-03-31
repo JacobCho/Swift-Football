@@ -63,7 +63,7 @@ struct TeamDetailInfoList: View {
                             case .teamRecord:
                                 if let error = viewModel.teamStatsError {
                                     LoadStateView(loadState: .error(error.description), buttonAction: {
-                                        refetchPlayers()
+                                        refetchTeamStats()
                                     })
                                 } else {
                                     if let stats = viewModel.teamStats {
