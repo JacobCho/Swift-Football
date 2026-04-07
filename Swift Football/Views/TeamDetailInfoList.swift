@@ -70,6 +70,8 @@ struct TeamDetailInfoList: View {
                                         TeamRecordView(stats: stats)
                                     }
                                 }
+                            case .teamForm:
+                                FormChart(data: viewModel.constructTeamForm())
                             case .playerStats:
                                 EmptyView()
                             }

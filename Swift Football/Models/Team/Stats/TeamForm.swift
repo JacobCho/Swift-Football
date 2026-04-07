@@ -6,3 +6,27 @@
 //
 
 import Foundation
+import SwiftUI
+
+enum MatchResult: String {
+    case win = "W"
+    case draw = "D"
+    case loss = "L"
+}
+
+struct TeamForm: Identifiable {
+    let id = UUID()
+    let gameWeek: Int
+    let result: MatchResult
+    
+    var color: Color {
+        switch result {
+        case .win:
+            return .green
+        case .draw:
+            return .yellow
+        case .loss:
+            return .red
+        }
+    }
+}

@@ -196,4 +196,24 @@ class TeamsViewModel: BaseViewModel {
             return Array(sorted.prefix(limit))
         }
     }
+    
+    func constructTeamForm() -> [TeamForm] {
+        guard let form = teamStats?.form else {
+            return []
+        }
+        
+        var teamForm: [TeamForm] = []
+        
+        for (index, result) in form.enumerated() {
+            var matchResult: MatchResult = .loss
+            if result == "W" {
+                matchResult = .win
+            } else if result == "D" {
+                matchResult = .draw
+            }
+            
+            teamForm.append(TeamForm(gameWeek: index + 1, result: matchResult))
+        }
+        return teamForm
+    }
 }
