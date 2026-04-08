@@ -8,6 +8,6 @@
 import Foundation
 
 struct ScoreStat: Decodable {
-    let home: String
-    let away: String
+    let home: String?
+    let away: String?
 }

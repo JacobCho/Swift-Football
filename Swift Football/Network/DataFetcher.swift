@@ -59,6 +59,17 @@ enum Endpoint: String {
         case .teams:
             return "man-utd-teams"
         case .teamsStats:
+            if let parameters, parameters.keys.contains("league") {
+                if let league = parameters["league"], let leagueId = Int(league) {
+                    if leagueId == 3 {
+                        return "man-utd-europa-2024-teams-stats"
+                    } else if leagueId == 45 {
+                        return "man-utd-fa-2024-teams-stats"
+                    } else {
+                        return "man-utd-prem-2024-teams-stats"
+                    }
+                }
+            }
             return "man-utd-prem-2024-teams-stats"
         case .players:
             if let parameters, parameters.keys.contains("team") {

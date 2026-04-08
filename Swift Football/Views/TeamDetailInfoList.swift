@@ -165,6 +165,9 @@ struct LeaguePicker: View {
                 return
             }
             viewModel.selectedLeague = newLeague
+            Task {
+                await viewModel.fetchTeamStats()
+            }
         }
     }
 }
