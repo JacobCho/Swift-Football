@@ -16,7 +16,7 @@ struct TeamDetailInfoList: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16, style: .circular)
-                .foregroundStyle(backgroundColor())
+                .foregroundStyle(Color(.detailListBackground))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             VStack {
                 if detailInfo == .teamStats {
@@ -38,7 +38,7 @@ struct TeamDetailInfoList: View {
                                     })
                                 } else {
                                     ForEach(viewModel.leagues) { leagueDetails in
-                                        TeamInfoLeaguesList(leagueDetails: leagueDetails, listRowBackgroundColor: listRowBackgroundColor())
+                                        TeamInfoLeaguesList(leagueDetails: leagueDetails)
                                             .frame(maxHeight: 30)
                                     }
                                 }
@@ -58,7 +58,7 @@ struct TeamDetailInfoList: View {
                                         refetchPlayers()
                                     })
                                 } else {
-                                    TeamPlayersList(viewModel: viewModel, listRowBackgroundColor: listRowBackgroundColor())
+                                    TeamPlayersList(viewModel: viewModel)
                                 }
                             case .teamRecord:
                                 if let error = viewModel.teamStatsError {
@@ -99,18 +99,6 @@ struct TeamDetailInfoList: View {
     func refetchTeamStats() {
         Task {
             await viewModel.fetchTeamStats()
-        }
-    }
-    
-    func listRowBackgroundColor() -> Color {
-        return colorScheme == .light ? .white : Color(red: 0.20, green: 0.20, blue: 0.20)
-    }
-    
-    func backgroundColor() -> Color {
-        if colorScheme == .light {
-            return Color(red: 0.91, green: 0.91, blue: 0.91)
-        } else {
-            return Color(red: 0.1, green: 0.1, blue: 0.1)
         }
     }
 }

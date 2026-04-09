@@ -14,9 +14,9 @@ struct TeamRecordView: View {
     var body: some View {
         Grid(horizontalSpacing: 10, verticalSpacing: 10) {
             GridRow {
-                RecordStatView(playedStat: stats.fixtures?.winsStat, goalsStat: nil, title: "Wins", customStatColor: Color(red: 0.32, green: 0.58, blue: 0.318))
-                RecordStatView(playedStat: stats.fixtures?.drawsStat, goalsStat: nil, title: "Draws", customStatColor: Color(red: 0.839, green: 0.839, blue: 0.463))
-                RecordStatView(playedStat: stats.fixtures?.losesStat, goalsStat: nil, title: "Loses", customStatColor: Color(red: 0.769, green: 0.224, blue: 0.133))
+                RecordStatView(playedStat: stats.fixtures?.winsStat, goalsStat: nil, title: "Wins", customStatColor: Color(.win))
+                RecordStatView(playedStat: stats.fixtures?.drawsStat, goalsStat: nil, title: "Draws", customStatColor: Color(.draw))
+                RecordStatView(playedStat: stats.fixtures?.losesStat, goalsStat: nil, title: "Loses", customStatColor: Color(.lose))
             }
             Divider()
             GridRow {

@@ -22,11 +22,11 @@ struct TeamForm: Identifiable {
     var color: Color {
         switch result {
         case .win:
-            return .green
+            return .win
         case .draw:
-            return .yellow
+            return .draw
         case .loss:
-            return .red
+            return .lose
         }
     }
 }

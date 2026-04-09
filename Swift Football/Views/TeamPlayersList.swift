@@ -10,7 +10,6 @@ import SwiftUI
 
 struct TeamPlayersList: View {
     let viewModel: TeamsViewModel
-    let listRowBackgroundColor: Color
     
     var body: some View {
         ForEach(viewModel.getPlayerPositions(), id: \.rawValue) { position in
@@ -21,7 +20,7 @@ struct TeamPlayersList: View {
                 }
             }
             .disclosureGroupStyle(GroupStyle())
-            .listRowBackground(listRowBackgroundColor)
+            .listRowBackground(Color(.listRowBackground))
         }
     }
 }

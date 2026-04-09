@@ -10,11 +10,9 @@ import SwiftUI
 
 struct TeamInfoLeaguesList: View {
     let leagueDetails: LeagueDetails
-    let listRowBackgroundColor: Color
     var body: some View {
         if let league = leagueDetails.league {
-            LogoListRow(listable: league, showSelectable: false, backgroundColor: listRowBackgroundColor)
-                .listRowBackground(listRowBackgroundColor)
+            LogoListRow(listable: league, showSelectable: false, backgroundColor: Color(.listRowBackground))
         }
     }
 }
